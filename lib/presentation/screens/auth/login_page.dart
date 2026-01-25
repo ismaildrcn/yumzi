@@ -1,7 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:yumzi/data/models/dto/dto_login_request.dart';
+import 'package:yumzi/data/services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({super.key});
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -9,8 +15,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
-
   final TextEditingController _passwordController = TextEditingController();
+  final AuthService _authService = AuthService();
 
   bool rememberMe = false;
 
@@ -128,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                         TextField(
                           controller: _emailController,
                           decoration: InputDecoration(
-                            hintText: 'example@example.com',
+                            hintText: 'yumzi@example.com',
                             contentPadding: EdgeInsets.symmetric(
                               vertical: 16,
                               horizontal: 16,
@@ -217,6 +223,10 @@ class _LoginPageState extends State<LoginPage> {
                                   rememberMe = newValue!;
                                 });
                               },
+                              checkColor: Colors.white54,
+                              activeColor: Theme.of(
+                                context,
+                              ).colorScheme.primary,
                             ),
                             Text(
                               'Remember Me',
@@ -254,9 +264,7 @@ class _LoginPageState extends State<LoginPage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: ElevatedButton(
-                      onPressed: () {
-                        // Giriş işlemi
-                      },
+                      onPressed: () => loginClicked(),
                       style: ElevatedButton.styleFrom(
                         minimumSize: Size(
                           MediaQuery.of(context).size.width,
@@ -310,5 +318,43 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     );
+  }
+
+  void loginClicked() async {
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+      // Hata mesajı göster
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.error(message: 'Please fill in all fields.'),
+      );
+      return;
+    }
+    int loginSuccess = await _authService.login(
+      DtoLoginRequest(
+        email: _emailController.text,
+        password: _passwordController.text,
+      ),
+    );
+    if (!mounted) return;
+
+    if (loginSuccess == HttpStatus.ok) {
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.success(message: 'Login successful!'),
+      );
+      // Başarılı giriş sonrası yapılacak işlemler
+    } else if (loginSuccess == HttpStatus.unauthorized) {
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.info(message: 'Invalid email or password.'),
+      );
+    } else {
+      showTopSnackBar(
+        Overlay.of(context),
+        CustomSnackBar.error(
+          message: 'An unexpected error occurred. Please try again.',
+        ),
+      );
+    }
   }
 }

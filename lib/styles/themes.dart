@@ -8,7 +8,7 @@ class AppTheme {
     useMaterial3: false,
     fontFamily: 'Sen',
     colorScheme: const ColorScheme.light(
-      primary: Color(0xFF246BFD), // Daha modern, tok bir mavi (Royal Blue)
+      primary: Color(0xFFFF7622), // Daha modern, tok bir mavi (Royal Blue)
       surface: Color(0xFFEEEEEE), // Açık gri, ana arkaplan
       onSurface: Color(0xFFF5F6F8), // Çok hafif gri, kartlar için
       secondary: Color(
