@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:yumzi/enums/app_routes.dart';
+import 'package:yumzi/presentation/screens/home/home_page.dart';
 
 class AppRouter {
   GoRouter get router => GoRouter(
@@ -32,8 +33,7 @@ class AppRouter {
         GoRoute(
           name: AppRoutes.home.name,
           path: AppRoutes.home.path,
-          builder: (context, state) =>
-              const Scaffold(body: Center(child: Text('Home Screen'))),
+          builder: (context, state) => const HomePage(),
         ),
       ],
     ),
