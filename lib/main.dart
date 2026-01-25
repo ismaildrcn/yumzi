@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yumzi/config/app_router.dart';
+import 'package:yumzi/styles/themes.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,9 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Yumzi',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      theme: AppTheme.lightTheme,
       routerConfig: AppRouter().router,
     );
   }
