@@ -1,11 +1,12 @@
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import 'package:yumzi/data/models/dto/dto_login_request.dart';
-import 'package:yumzi/data/services/auth_service.dart';
+import 'package:yumzi/enums/app_routes.dart';
+import 'package:yumzi/presentation/providers/auth_provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -17,7 +18,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final AuthService _authService = AuthService();
+
+  bool _isPasswordVisible = false;
 
   late AnimationController _animationController1;
   late AnimationController _animationController2;
@@ -302,9 +304,9 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                         ),
                         TextField(
                           controller: _passwordController,
-                          obscureText: true,
+                          obscureText: !_isPasswordVisible,
                           decoration: InputDecoration(
-                            hintText: 'Enter your password',
+                            hintText: '*********',
                             contentPadding: EdgeInsets.symmetric(
                               vertical: 16,
                               horizontal: 16,
@@ -325,6 +327,24 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                             enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.transparent),
                               borderRadius: BorderRadius.circular(12),
+                            ),
+                            suffixIcon: IconButton(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                              ),
+                              icon: Icon(
+                                _isPasswordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSecondary,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
                             ),
                           ),
                         ),
@@ -386,22 +406,26 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: ElevatedButton(
-                      onPressed: () => loginClicked(),
-                      style: ElevatedButton.styleFrom(
-                        minimumSize: Size(
-                          MediaQuery.of(context).size.width,
-                          56,
-                        ),
-                        textStyle: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: const Text('Log In'),
+                    child: Consumer<AuthProvider>(
+                      builder: (context, authProvider, child) {
+                        return ElevatedButton(
+                          onPressed: () => loginClicked(authProvider),
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: Size(
+                              MediaQuery.of(context).size.width,
+                              56,
+                            ),
+                            textStyle: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: const Text('Log In'),
+                        );
+                      },
                     ),
                   ),
 
@@ -421,7 +445,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                         ),
                         TextButton(
                           onPressed: () {
-                            // Kayıt olma sayfasına yönlendirme
+                            context.push(AppRoutes.register.path);
                           },
                           child: Text(
                             'Sign Up',
@@ -443,41 +467,39 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
   }
 
-  void loginClicked() async {
+  void loginClicked(AuthProvider authProvider) async {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       // Hata mesajı göster
-      showTopSnackBar(
-        Overlay.of(context),
-        CustomSnackBar.error(message: 'Please fill in all fields.'),
-      );
+      errorMessage('Please fill in all fields.');
       return;
     }
-    int loginSuccess = await _authService.login(
-      DtoLoginRequest(
-        email: _emailController.text,
-        password: _passwordController.text,
-      ),
+    bool loginSuccess = await authProvider.login(
+      email: _emailController.text,
+      password: _passwordController.text,
     );
     if (!mounted) return;
 
-    if (loginSuccess == HttpStatus.ok) {
-      showTopSnackBar(
-        Overlay.of(context),
-        CustomSnackBar.success(message: 'Login successful!'),
-      );
+    if (loginSuccess) {
+      successMessage('Login successful!');
       // Başarılı giriş sonrası yapılacak işlemler
-    } else if (loginSuccess == HttpStatus.unauthorized) {
-      showTopSnackBar(
-        Overlay.of(context),
-        CustomSnackBar.info(message: 'Invalid email or password.'),
-      );
     } else {
-      showTopSnackBar(
-        Overlay.of(context),
-        CustomSnackBar.error(
-          message: 'An unexpected error occurred. Please try again.',
-        ),
+      errorMessage(
+        authProvider.errorMessage ?? 'Login failed. Please try again.',
       );
     }
+  }
+
+  void errorMessage(String message) {
+    showTopSnackBar(
+      Overlay.of(context),
+      CustomSnackBar.error(message: message),
+    );
+  }
+
+  void successMessage(String message) {
+    showTopSnackBar(
+      Overlay.of(context),
+      CustomSnackBar.success(message: message),
+    );
   }
 }

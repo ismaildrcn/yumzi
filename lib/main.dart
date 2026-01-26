@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:yumzi/config/app_router.dart';
+import 'package:yumzi/presentation/providers/auth_provider.dart';
 import 'package:yumzi/styles/themes.dart';
 
 void main() {
@@ -9,14 +11,16 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'Yumzi',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.lightTheme,
-      routerConfig: AppRouter().router,
+    return MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => AuthProvider())],
+      child: MaterialApp.router(
+        title: 'Yumzi',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.lightTheme,
+        routerConfig: AppRouter().router,
+      ),
     );
   }
 }

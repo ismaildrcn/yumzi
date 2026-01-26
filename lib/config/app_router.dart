@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:yumzi/enums/app_routes.dart';
+import 'package:yumzi/presentation/screens/auth/login_page.dart';
 import 'package:yumzi/presentation/screens/auth/register_page.dart';
 
 class AppRouter {
@@ -33,6 +34,16 @@ class AppRouter {
         GoRoute(
           name: AppRoutes.home.name,
           path: AppRoutes.home.path,
+          builder: (context, state) => RegisterPage(),
+        ),
+        GoRoute(
+          name: AppRoutes.login.name,
+          path: AppRoutes.login.path,
+          builder: (context, state) => LoginPage(),
+        ),
+        GoRoute(
+          name: AppRoutes.register.name,
+          path: AppRoutes.register.path,
           builder: (context, state) => RegisterPage(),
         ),
       ],

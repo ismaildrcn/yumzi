@@ -63,6 +63,27 @@ class AuthService {
     }
   }
 
+  Future<int> register(Map<String, dynamic> request) async {
+    try {
+      final response = await _dio.post('/register', data: request);
+      if (response.statusCode == 200) {
+        debugPrint('Kayıt başarılı');
+        return HttpStatus.ok;
+      }
+      return HttpStatus.badRequest;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 400) {
+        return HttpStatus.badRequest;
+      } else if (e.response?.statusCode == 500) {
+        return HttpStatus.internalServerError;
+      } else {
+        return HttpStatus.internalServerError;
+      }
+    } catch (ex) {
+      return HttpStatus.internalServerError;
+    }
+  }
+
   // Logout - token'ları sil
   Future<void> logout() async {
     await TokenStorage.deleteTokens();
