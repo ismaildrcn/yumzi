@@ -1,29 +1,23 @@
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import 'package:yumzi/data/models/dto/dto_login_request.dart';
-import 'package:yumzi/data/services/auth_service.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
+class _RegisterPageState extends State<RegisterPage>
+    with TickerProviderStateMixin {
+  final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final AuthService _authService = AuthService();
 
   late AnimationController _animationController1;
   late AnimationController _animationController2;
   late AnimationController _animationController3;
-
-  bool rememberMe = false;
 
   @override
   void initState() {
@@ -49,6 +43,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     _animationController1.dispose();
     _animationController2.dispose();
     _animationController3.dispose();
+    _fullNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -160,7 +155,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               angle:
                   -0.4, // Radyan cinsinden açı (negatif = saat yönünün tersine)
               child: Icon(
-                Icons.fastfood,
+                Icons.delivery_dining,
                 size: 120,
                 color: Theme.of(context).colorScheme.primary.withAlpha(64),
                 shadows: [
@@ -181,7 +176,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               angle:
                   0.4, // Radyan cinsinden açı (negatif = saat yönünün tersine)
               child: Icon(
-                Icons.shopping_bag_outlined,
+                Icons.shopping_cart_outlined,
                 size: 100,
                 color: Theme.of(context).colorScheme.primary.withAlpha(64),
                 shadows: [
@@ -204,7 +199,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               spacing: 8,
               children: [
                 Text(
-                  'Log In',
+                  'Sign Up',
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.bold,
@@ -212,7 +207,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                   ),
                 ),
                 Text(
-                  'Please sign in to your existing account',
+                  'Please sign up to get started',
                   style: TextStyle(
                     fontSize: 16,
                     color: Theme.of(context).colorScheme.surface,
@@ -238,6 +233,53 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(height: 40),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 8,
+                      children: [
+                        Text(
+                          'Full Name',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium!.color,
+                          ),
+                        ),
+                        TextField(
+                          controller: _fullNameController,
+                          decoration: InputDecoration(
+                            hintText: 'Ismail Durcan',
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 16,
+                              horizontal: 16,
+                            ),
+                            filled: true,
+                            fillColor: Theme.of(
+                              context,
+                            ).colorScheme.onSecondary.withAlpha(32),
+                            hintStyle: TextStyle(
+                              fontSize: 14,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSecondary.withAlpha(128),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.transparent),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 20),
+
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: Column(
@@ -304,7 +346,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                           controller: _passwordController,
                           obscureText: true,
                           decoration: InputDecoration(
-                            hintText: 'Enter your password',
+                            hintText: '*********',
                             contentPadding: EdgeInsets.symmetric(
                               vertical: 16,
                               horizontal: 16,
@@ -335,59 +377,56 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: Row(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 8,
                       children: [
-                        Row(
-                          children: [
-                            Checkbox(
-                              value: rememberMe,
-                              onChanged: (newValue) {
-                                setState(() {
-                                  rememberMe = newValue!;
-                                });
-                              },
-                              checkColor: Colors.white54,
-                              activeColor: Theme.of(
-                                context,
-                              ).colorScheme.primary,
-                            ),
-                            Text(
-                              'Remember Me',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Theme.of(
-                                  context,
-                                ).textTheme.labelLarge!.color,
-                              ),
-                            ),
-                          ],
+                        Text(
+                          'Re-Type Password',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Theme.of(
+                              context,
+                            ).textTheme.bodyMedium!.color,
+                          ),
                         ),
-                        Spacer(),
-                        Row(
-                          children: [
-                            TextButton(
-                              onPressed: () {
-                                // Forgot password action
-                              },
-                              child: Text(
-                                'Forgot Password?',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                              ),
+                        TextField(
+                          controller: _passwordController,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            hintText: '*********',
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 16,
+                              horizontal: 16,
                             ),
-                          ],
+                            filled: true,
+                            fillColor: Theme.of(
+                              context,
+                            ).colorScheme.onSecondary.withAlpha(32),
+                            hintStyle: TextStyle(
+                              fontSize: 14,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSecondary.withAlpha(128),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.transparent),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 40),
 
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24.0),
                     child: ElevatedButton(
-                      onPressed: () => loginClicked(),
+                      onPressed: () => registerClicked(),
                       style: ElevatedButton.styleFrom(
                         minimumSize: Size(
                           MediaQuery.of(context).size.width,
@@ -401,37 +440,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: const Text('Log In'),
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-                  Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Don't have an account? ",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Theme.of(
-                              context,
-                            ).textTheme.bodyMedium!.color,
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            // Kayıt olma sayfasına yönlendirme
-                          },
-                          child: Text(
-                            'Sign Up',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                          ),
-                        ),
-                      ],
+                      child: const Text('Sign Up'),
                     ),
                   ),
                 ],
@@ -443,41 +452,5 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
   }
 
-  void loginClicked() async {
-    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
-      // Hata mesajı göster
-      showTopSnackBar(
-        Overlay.of(context),
-        CustomSnackBar.error(message: 'Please fill in all fields.'),
-      );
-      return;
-    }
-    int loginSuccess = await _authService.login(
-      DtoLoginRequest(
-        email: _emailController.text,
-        password: _passwordController.text,
-      ),
-    );
-    if (!mounted) return;
-
-    if (loginSuccess == HttpStatus.ok) {
-      showTopSnackBar(
-        Overlay.of(context),
-        CustomSnackBar.success(message: 'Login successful!'),
-      );
-      // Başarılı giriş sonrası yapılacak işlemler
-    } else if (loginSuccess == HttpStatus.unauthorized) {
-      showTopSnackBar(
-        Overlay.of(context),
-        CustomSnackBar.info(message: 'Invalid email or password.'),
-      );
-    } else {
-      showTopSnackBar(
-        Overlay.of(context),
-        CustomSnackBar.error(
-          message: 'An unexpected error occurred. Please try again.',
-        ),
-      );
-    }
-  }
+  void registerClicked() {}
 }

@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:yumzi/core/network/auth_interceptor.dart';
+import 'package:yumzi/core/network/interceptor/auth_interceptor.dart';
 
 class DioClient {
   static final DioClient _instance = DioClient._internal();

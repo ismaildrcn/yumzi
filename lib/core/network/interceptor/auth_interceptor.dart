@@ -1,20 +1,50 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:yumzi/core/storage/token_storage.dart';
 
-// Token suresi bittiginde veya gecerli olmadiginda
-// kullaniciyi yeniden giris yapmaya yonlendirmek icin
 class AuthInterceptor extends Interceptor {
-  final String? Function() getToken;
+  @override
+  Future<void> onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    try {
+      // Token'ı storage'dan al
+      final token = await TokenStorage.getAccessToken();
+      if (token != null && token.isNotEmpty) {
+        // Token varsa Authorization header'ına ekle
+        options.headers['Authorization'] = 'Bearer $token';
+      } else {
+        debugPrint('[AUTH_INTERCEPTOR] Token bulunamadı veya boş');
+      }
 
-  AuthInterceptor({required this.getToken});
+      // İsteği devam ettir
+      handler.next(options);
+    } catch (e) {
+      debugPrint('[AUTH_INTERCEPTOR] Token alma hatası: $e');
+      handler.next(options);
+    }
+  }
 
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    final token = getToken();
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
+    debugPrint('[AUTH_INTERCEPTOR] Error: ${err.response?.statusCode}');
 
-    if (token != null && token.isNotEmpty) {
-      options.headers['Authorization'] = 'Bearer $token';
+    // 401 Unauthorized - Token geçersiz veya süresi dolmuş
+    if (err.response?.statusCode == 401) {
+      debugPrint(
+        '[AUTH_INTERCEPTOR] 401 - Token geçersiz, kullanıcı çıkış yapmalı',
+      );
+      // Burada token refresh veya logout işlemi yapılabilir
+      await TokenStorage.deleteTokens();
     }
 
-    super.onRequest(options, handler);
+    handler.next(err);
+  }
+
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    debugPrint('[AUTH_INTERCEPTOR] Response: ${response.statusCode}');
+    handler.next(response);
   }
 }
