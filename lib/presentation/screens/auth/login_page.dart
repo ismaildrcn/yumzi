@@ -219,7 +219,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                   children: [
                     TextButton(
                       onPressed: () {
-                        // Forgot password action
+                        context.push(AppRoutes.forgotPassword.path);
                       },
                       child: Text(
                         'Forgot Password?',

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:yumzi/enums/app_routes.dart';
+import 'package:yumzi/presentation/screens/auth/forgot_password.dart';
 import 'package:yumzi/presentation/screens/auth/login_page.dart';
 import 'package:yumzi/presentation/screens/auth/register_page.dart';
+import 'package:yumzi/presentation/screens/auth/verification_page.dart';
 
 class AppRouter {
   GoRouter get router => GoRouter(
@@ -34,7 +36,7 @@ class AppRouter {
         GoRoute(
           name: AppRoutes.home.name,
           path: AppRoutes.home.path,
-          builder: (context, state) => RegisterPage(),
+          builder: (context, state) => LoginPage(),
         ),
         GoRoute(
           name: AppRoutes.login.name,
@@ -45,6 +47,16 @@ class AppRouter {
           name: AppRoutes.register.name,
           path: AppRoutes.register.path,
           builder: (context, state) => RegisterPage(),
+        ),
+        GoRoute(
+          name: AppRoutes.verification.name,
+          path: AppRoutes.verification.path,
+          builder: (context, state) => VerificationPage(),
+        ),
+        GoRoute(
+          name: AppRoutes.forgotPassword.name,
+          path: AppRoutes.forgotPassword.path,
+          builder: (context, state) => ForgotPasswordPage(),
         ),
       ],
     ),
