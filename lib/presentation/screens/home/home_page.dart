@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yumzi/data/services/auth_service.dart';
+import 'package:yumzi/presentation/widgets/restaurant_meta_info.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -285,35 +286,10 @@ class _HomePageState extends State<HomePage> {
             SizedBox(height: 8),
             Text(title, style: TextStyle(fontSize: 20)),
             SizedBox(height: 16),
-            Row(
-              children: [
-                Icon(
-                  Icons.star_border,
-                  color: Theme.of(context).colorScheme.primary,
-                  size: 24,
-                ),
-                SizedBox(width: 4),
-                Text(
-                  "4.5",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(width: 24),
-                Icon(
-                  Icons.delivery_dining_outlined,
-                  size: 24,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                SizedBox(width: 4),
-                Text("Free", style: TextStyle(fontSize: 14)),
-                SizedBox(width: 24),
-                Icon(
-                  Icons.access_time,
-                  size: 24,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                SizedBox(width: 4),
-                Text("30-40 min", style: TextStyle(fontSize: 14)),
-              ],
+            RestaurantMetaInfo(
+              rating: 4.5,
+              deliveryFee: 0,
+              deliveryTime: "30-40 min",
             ),
           ],
         ),
