@@ -5,6 +5,7 @@ import 'package:yumzi/presentation/screens/auth/forgot_password.dart';
 import 'package:yumzi/presentation/screens/auth/login_page.dart';
 import 'package:yumzi/presentation/screens/auth/register_page.dart';
 import 'package:yumzi/presentation/screens/auth/verification_page.dart';
+import 'package:yumzi/presentation/screens/home/home_page.dart';
 
 class AppRouter {
   GoRouter get router => GoRouter(
@@ -36,7 +37,7 @@ class AppRouter {
         GoRoute(
           name: AppRoutes.home.name,
           path: AppRoutes.home.path,
-          builder: (context, state) => LoginPage(),
+          builder: (context, state) => HomePage(),
         ),
         GoRoute(
           name: AppRoutes.login.name,
