@@ -12,6 +12,15 @@ class UserDetailPage extends StatefulWidget {
 }
 
 class _UserDetailPageState extends State<UserDetailPage> {
+  bool isVerified = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    isVerified = false; // Example initialization
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,6 +75,60 @@ class _UserDetailPageState extends State<UserDetailPage> {
                 ),
                 SizedBox(height: 32),
                 UserAvatar(),
+                SizedBox(height: 24),
+
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: isVerified
+                        ? Colors.green.withOpacity(0.1)
+                        : Colors.orange.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isVerified ? Colors.green : Colors.orange,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        isVerified ? Icons.verified_user : Icons.gpp_maybe,
+                        color: isVerified ? Colors.green : Colors.orange,
+                        size: 28,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              isVerified
+                                  ? "Verified Account"
+                                  : "Unverified Account",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: isVerified
+                                    ? Colors.green[700]
+                                    : Colors.orange[800],
+                              ),
+                            ),
+                            if (!isVerified) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                "Please verify your email address.",
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.orange[800],
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
                 SizedBox(height: 24),
 
                 Container(
