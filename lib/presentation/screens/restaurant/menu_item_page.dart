@@ -99,10 +99,10 @@ class _MenuItemPageState extends State<MenuItemPage> {
                           border: BoxBorder.all(
                             color: Theme.of(
                               context,
-                            ).colorScheme.secondary.withAlpha(32),
+                            ).colorScheme.onSurface.withAlpha(32),
                           ),
                           borderRadius: BorderRadius.circular(50),
-                          color: Theme.of(context).colorScheme.onSurface,
+                          color: Theme.of(context).colorScheme.secondary,
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withAlpha(16),
@@ -144,7 +144,7 @@ class _MenuItemPageState extends State<MenuItemPage> {
                               fontSize: 14,
                               color: Theme.of(
                                 context,
-                              ).colorScheme.secondary.withAlpha(128),
+                              ).colorScheme.onSurface.withAlpha(128),
                             ),
                           ),
                           SizedBox(height: 20),
@@ -200,7 +200,7 @@ class _MenuItemPageState extends State<MenuItemPage> {
                           Spacer(),
                           Container(
                             decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.secondary,
+                              color: Theme.of(context).colorScheme.onSurface,
                               borderRadius: BorderRadius.circular(50),
                             ),
                             child: Row(

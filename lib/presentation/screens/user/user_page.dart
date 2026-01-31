@@ -43,13 +43,7 @@ class _UserPageState extends State<UserPage> {
                           ),
                         ),
                         SizedBox(width: 16),
-                        Text(
-                          "Profile",
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        Text("Profile", style: TextStyle(fontSize: 17)),
                       ],
                     ),
 
@@ -81,7 +75,7 @@ class _UserPageState extends State<UserPage> {
                   decoration: BoxDecoration(
                     color: Theme.of(
                       context,
-                    ).colorScheme.secondary.withAlpha(16),
+                    ).colorScheme.onSurface.withAlpha(16),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Column(
@@ -115,7 +109,7 @@ class _UserPageState extends State<UserPage> {
                   decoration: BoxDecoration(
                     color: Theme.of(
                       context,
-                    ).colorScheme.secondary.withAlpha(16),
+                    ).colorScheme.onSurface.withAlpha(16),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Column(
@@ -161,7 +155,7 @@ class _UserPageState extends State<UserPage> {
                   decoration: BoxDecoration(
                     color: Theme.of(
                       context,
-                    ).colorScheme.secondary.withAlpha(16),
+                    ).colorScheme.onSurface.withAlpha(16),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Column(
@@ -202,7 +196,7 @@ class _UserPageState extends State<UserPage> {
                   decoration: BoxDecoration(
                     color: Theme.of(
                       context,
-                    ).colorScheme.secondary.withAlpha(16),
+                    ).colorScheme.onSurface.withAlpha(16),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Column(

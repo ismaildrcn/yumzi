@@ -56,7 +56,7 @@ class _AuthSkeletonState extends State<AuthSkeleton>
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Theme.of(context).colorScheme.secondary,
+      backgroundColor: Theme.of(context).colorScheme.onSurface,
       body: Stack(
         children: [
           // Blurred animated circles

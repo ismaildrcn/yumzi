@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/screens/user/user_avatar.dart';
 import 'package:yumzi/presentation/screens/user/user_menu_item.dart';
 
@@ -41,13 +43,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                           ),
                         ),
                         SizedBox(width: 16),
-                        Text(
-                          "Personal Info",
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        Text("Personal Info", style: TextStyle(fontSize: 17)),
                       ],
                     ),
 
@@ -62,7 +58,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                         iconSize: 28,
                         icon: Icon(Icons.edit_note_sharp),
                         onPressed: () {
-                          Navigator.pop(context);
+                          context.push(AppRoutes.userEdit.path);
                         },
                       ),
                     ),
@@ -77,7 +73,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
                   decoration: BoxDecoration(
                     color: Theme.of(
                       context,
-                    ).colorScheme.secondary.withAlpha(16),
+                    ).colorScheme.onSurface.withAlpha(16),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Column(

@@ -191,7 +191,7 @@ class _HomePageState extends State<HomePage> {
           width: 122,
           height: 122,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.onSurface,
+            color: Theme.of(context).colorScheme.secondary,
             borderRadius: BorderRadius.circular(15),
             boxShadow: [
               BoxShadow(

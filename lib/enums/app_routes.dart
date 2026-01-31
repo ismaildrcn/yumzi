@@ -5,6 +5,7 @@ enum AppRoutes {
   register("/register"),
   user("/user"),
   userDetail("/user-detail"),
+  userEdit("/user-edit"),
   forgotPassword("/forgot-password"),
   verification("/verification"),
   restaurant("/restaurant"),

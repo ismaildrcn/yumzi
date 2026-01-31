@@ -89,7 +89,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
                     fontSize: 14,
                     color: Theme.of(
                       context,
-                    ).colorScheme.secondary.withAlpha(128),
+                    ).colorScheme.onSurface.withAlpha(128),
                   ),
                 ),
                 SizedBox(height: 20),
@@ -124,10 +124,10 @@ class _RestaurantPageState extends State<RestaurantPage> {
               borderRadius: BorderRadius.circular(50),
             ),
             unselectedDecoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.onSurface,
+              color: Theme.of(context).colorScheme.secondary,
               borderRadius: BorderRadius.circular(50),
               border: Border.all(
-                color: Theme.of(context).colorScheme.secondary,
+                color: Theme.of(context).colorScheme.onSurface,
                 width: 1.5,
               ),
             ),
@@ -181,7 +181,7 @@ class _RestaurantPageState extends State<RestaurantPage> {
       width: 155,
       height: 150,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onSurface,
+        color: Theme.of(context).colorScheme.secondary,
         borderRadius: BorderRadius.circular(25),
         boxShadow: [
           BoxShadow(

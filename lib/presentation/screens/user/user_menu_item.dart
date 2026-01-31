@@ -21,7 +21,7 @@ class UserMenuItem extends StatelessWidget {
       leading: Container(
         padding: EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.onSurface,
+          color: Theme.of(context).colorScheme.secondary,
           borderRadius: BorderRadius.circular(50),
         ),
         child: icon,
