@@ -6,7 +6,7 @@ import 'package:yumzi/presentation/screens/auth/login_page.dart';
 import 'package:yumzi/presentation/screens/auth/register_page.dart';
 import 'package:yumzi/presentation/screens/auth/verification_page.dart';
 import 'package:yumzi/presentation/screens/home/home_page.dart';
-import 'package:yumzi/presentation/screens/menu_item/menu_item_page.dart';
+import 'package:yumzi/presentation/screens/restaurant/menu_item_page.dart';
 import 'package:yumzi/presentation/screens/restaurant/restaurant_page.dart';
 
 class AppRouter {
