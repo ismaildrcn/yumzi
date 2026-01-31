@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yumzi/presentation/screens/user/user_menu_item.dart';
 
 class UserPage extends StatefulWidget {
   const UserPage({super.key});
@@ -119,7 +120,7 @@ class _UserPageState extends State<UserPage> {
                     spacing: 8,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      profileMenuItem(
+                      UserMenuItem(
                         icon: Icon(
                           Icons.person_2_outlined,
                           color: Theme.of(context).colorScheme.primary,
@@ -127,7 +128,7 @@ class _UserPageState extends State<UserPage> {
                         title: "Personel Info",
                         onTap: () {},
                       ),
-                      profileMenuItem(
+                      UserMenuItem(
                         icon: Icon(
                           Icons.pending_actions,
                           color: Colors.deepPurple,
@@ -153,7 +154,7 @@ class _UserPageState extends State<UserPage> {
                     spacing: 8,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      profileMenuItem(
+                      UserMenuItem(
                         icon: Icon(
                           Icons.shopping_bag_outlined,
                           color: Colors.blueAccent,
@@ -161,12 +162,12 @@ class _UserPageState extends State<UserPage> {
                         title: "Cart",
                         onTap: () {},
                       ),
-                      profileMenuItem(
+                      UserMenuItem(
                         icon: Icon(Icons.favorite_border, color: Colors.pink),
                         title: "Favorites",
                         onTap: () {},
                       ),
-                      profileMenuItem(
+                      UserMenuItem(
                         icon: Icon(
                           Icons.notifications_outlined,
                           color: Colors.redAccent,
@@ -174,7 +175,7 @@ class _UserPageState extends State<UserPage> {
                         title: "Notifications",
                         onTap: () {},
                       ),
-                      profileMenuItem(
+                      UserMenuItem(
                         icon: Icon(
                           Icons.payment_outlined,
                           color: Colors.orangeAccent,
@@ -199,7 +200,7 @@ class _UserPageState extends State<UserPage> {
                     spacing: 8,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      profileMenuItem(
+                      UserMenuItem(
                         icon: Icon(
                           Icons.help_outline,
                           color: Colors.orangeAccent,
@@ -207,7 +208,7 @@ class _UserPageState extends State<UserPage> {
                         title: "FAQ",
                         onTap: () {},
                       ),
-                      profileMenuItem(
+                      UserMenuItem(
                         icon: Icon(
                           Icons.rate_review_outlined,
                           color: Colors.orangeAccent,
@@ -215,7 +216,7 @@ class _UserPageState extends State<UserPage> {
                         title: "User Reviews",
                         onTap: () {},
                       ),
-                      profileMenuItem(
+                      UserMenuItem(
                         icon: Icon(
                           Icons.settings_outlined,
                           color: Colors.deepPurpleAccent,
@@ -240,7 +241,7 @@ class _UserPageState extends State<UserPage> {
                     spacing: 8,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      profileMenuItem(
+                      UserMenuItem(
                         icon: Icon(Icons.logout, color: Colors.redAccent),
                         title: "Logout",
                         onTap: () {},
@@ -253,29 +254,6 @@ class _UserPageState extends State<UserPage> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget profileMenuItem({
-    required Icon icon,
-    required String title,
-    String? subtitle,
-    required VoidCallback onTap,
-  }) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      leading: Container(
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.onSurface,
-          borderRadius: BorderRadius.circular(50),
-        ),
-        child: icon,
-      ),
-      title: Text(title, style: TextStyle(fontSize: 16)),
-      subtitle: subtitle != null ? Text(subtitle) : null,
-      trailing: Icon(Icons.arrow_forward_ios),
-      onTap: onTap,
     );
   }
 }
