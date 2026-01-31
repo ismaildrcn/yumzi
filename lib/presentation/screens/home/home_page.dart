@@ -93,7 +93,10 @@ class _HomePageState extends State<HomePage> {
               color: Theme.of(context).colorScheme.onSecondary.withAlpha(150),
               borderRadius: BorderRadius.circular(15),
             ),
-            child: IconButton(onPressed: () => {}, icon: Icon(Icons.menu)),
+            child: IconButton(
+              onPressed: () => {context.push(AppRoutes.user.path)},
+              icon: Icon(Icons.menu),
+            ),
           ),
           Column(
             spacing: 4,

@@ -8,6 +8,7 @@ import 'package:yumzi/presentation/screens/auth/verification_page.dart';
 import 'package:yumzi/presentation/screens/home/home_page.dart';
 import 'package:yumzi/presentation/screens/restaurant/menu_item_page.dart';
 import 'package:yumzi/presentation/screens/restaurant/restaurant_page.dart';
+import 'package:yumzi/presentation/screens/user/user_page.dart';
 
 class AppRouter {
   GoRouter get router => GoRouter(
@@ -70,6 +71,11 @@ class AppRouter {
           name: AppRoutes.menuItem.name,
           path: AppRoutes.menuItem.path,
           builder: (context, state) => MenuItemPage(),
+        ),
+        GoRoute(
+          name: AppRoutes.user.name,
+          path: AppRoutes.user.path,
+          builder: (context, state) => UserPage(),
         ),
       ],
     ),

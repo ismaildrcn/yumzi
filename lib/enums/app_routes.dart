@@ -3,6 +3,7 @@ enum AppRoutes {
   onboarding("/onboarding"),
   login("/login"),
   register("/register"),
+  user("/user"),
   forgotPassword("/forgot-password"),
   verification("/verification"),
   restaurant("/restaurant"),
