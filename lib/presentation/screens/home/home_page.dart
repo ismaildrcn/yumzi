@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:yumzi/data/services/auth_service.dart';
+import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/widgets/restaurant_meta_info.dart';
 
 class HomePage extends StatefulWidget {
@@ -268,30 +270,35 @@ class _HomePageState extends State<HomePage> {
   Widget restaurantCard(String title, String imagePath) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: SizedBox(
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              height: 140,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(15)),
-                image: DecorationImage(
-                  image: AssetImage(imagePath),
-                  fit: BoxFit.cover,
+      child: GestureDetector(
+        onTap: () {
+          context.push(AppRoutes.menuItem.path);
+        },
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: 140,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                  image: DecorationImage(
+                    image: AssetImage(imagePath),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 8),
-            Text(title, style: TextStyle(fontSize: 20)),
-            SizedBox(height: 16),
-            RestaurantMetaInfo(
-              rating: 4.5,
-              deliveryFee: 0,
-              deliveryTime: "30-40 min",
-            ),
-          ],
+              SizedBox(height: 8),
+              Text(title, style: TextStyle(fontSize: 20)),
+              SizedBox(height: 16),
+              RestaurantMetaInfo(
+                rating: 4.5,
+                deliveryFee: 0,
+                deliveryTime: "30-40 min",
+              ),
+            ],
+          ),
         ),
       ),
     );

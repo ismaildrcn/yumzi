@@ -41,6 +41,7 @@ dependencies:
   top_snackbar_flutter: ^3.3.0
   email_validator: ^3.0.0
   google_fonts: ^6.3.2
+  hexcolor: ^3.0.2
 
 dev_dependencies:
   flutter_test:
