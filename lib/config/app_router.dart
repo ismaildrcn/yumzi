@@ -7,6 +7,7 @@ import 'package:yumzi/presentation/screens/auth/register_page.dart';
 import 'package:yumzi/presentation/screens/auth/verification_page.dart';
 import 'package:yumzi/presentation/screens/home/home_page.dart';
 import 'package:yumzi/presentation/screens/menu_item/menu_item_page.dart';
+import 'package:yumzi/presentation/screens/restaurant/restaurant_page.dart';
 
 class AppRouter {
   GoRouter get router => GoRouter(
@@ -59,6 +60,11 @@ class AppRouter {
           name: AppRoutes.forgotPassword.name,
           path: AppRoutes.forgotPassword.path,
           builder: (context, state) => ForgotPasswordPage(),
+        ),
+        GoRoute(
+          name: AppRoutes.restaurant.name,
+          path: AppRoutes.restaurant.path,
+          builder: (context, state) => RestaurantPage(),
         ),
         GoRoute(
           name: AppRoutes.menuItem.name,

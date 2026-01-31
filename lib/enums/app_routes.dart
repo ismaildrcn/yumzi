@@ -5,6 +5,7 @@ enum AppRoutes {
   register("/register"),
   forgotPassword("/forgot-password"),
   verification("/verification"),
+  restaurant("/restaurant"),
   menuItem("/menu-item"),
   cart("/cart");
 

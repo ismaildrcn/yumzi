@@ -51,6 +51,7 @@ class AppTheme {
         fontWeight: FontWeight.bold,
       ),
     ),
+    scaffoldBackgroundColor: Color(0xFFF5F6F8), // Açık gri arkaplan
   );
 
   static ThemeData get darkTheme => ThemeData(
