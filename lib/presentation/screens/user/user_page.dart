@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:yumzi/enums/app_routes.dart';
+import 'package:yumzi/presentation/screens/user/user_avatar.dart';
 import 'package:yumzi/presentation/screens/user/user_menu_item.dart';
 
 class UserPage extends StatefulWidget {
@@ -68,42 +71,7 @@ class _UserPageState extends State<UserPage> {
                   ],
                 ),
                 SizedBox(height: 24),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundColor: Theme.of(
-                        context,
-                      ).colorScheme.primary.withAlpha(150),
-                    ),
-                    SizedBox(width: 32),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 8),
-                        Text(
-                          "Ismail Durcan",
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          "email@example.com",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSecondary.withAlpha(150),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                UserAvatar(),
 
                 SizedBox(height: 32),
 
@@ -126,7 +94,7 @@ class _UserPageState extends State<UserPage> {
                           color: Theme.of(context).colorScheme.primary,
                         ),
                         title: "Personel Info",
-                        onTap: () {},
+                        onTap: () => context.push(AppRoutes.userDetail.path),
                       ),
                       UserMenuItem(
                         icon: Icon(

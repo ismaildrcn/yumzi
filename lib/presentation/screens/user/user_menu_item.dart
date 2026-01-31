@@ -5,13 +5,13 @@ class UserMenuItem extends StatelessWidget {
   Icon icon;
   String title;
   String? subtitle;
-  VoidCallback onTap;
+  VoidCallback? onTap;
   UserMenuItem({
     super.key,
     required this.icon,
     required this.title,
     this.subtitle,
-    required this.onTap,
+    this.onTap,
   });
 
   @override
@@ -28,7 +28,7 @@ class UserMenuItem extends StatelessWidget {
       ),
       title: Text(title, style: TextStyle(fontSize: 16)),
       subtitle: subtitle != null ? Text(subtitle!) : null,
-      trailing: Icon(Icons.arrow_forward_ios),
+      trailing: onTap != null ? Icon(Icons.arrow_forward_ios) : null,
       onTap: onTap,
     );
   }
