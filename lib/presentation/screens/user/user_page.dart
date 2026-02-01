@@ -3,8 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:yumzi/data/models/entity/user_model.dart';
 import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/auth_provider.dart';
+import 'package:yumzi/presentation/providers/user_provider.dart';
 import 'package:yumzi/presentation/screens/user/user_avatar.dart';
 import 'package:yumzi/presentation/screens/user/user_menu_item.dart';
 
@@ -16,205 +18,241 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
+  UserModel? user;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadUser();
+    });
+  }
+
+  void _loadUser() async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final fetchedUser = await userProvider.fetchUser();
+    if (mounted) {
+      setState(() {
+        user = fetchedUser;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSecondary.withAlpha(150),
-                            borderRadius: BorderRadius.circular(15),
+          child: Consumer<UserProvider>(
+            builder: (context, userProvider, child) {
+              if (userProvider.isLoading) {
+                return Center(child: CircularProgressIndicator());
+              } else if (userProvider.errorMessage != null) {
+                return Center(
+                  child: Text('Error: ${userProvider.errorMessage}'),
+                );
+              } else {
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSecondary.withAlpha(150),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: IconButton(
+                                  iconSize: 28,
+                                  icon: Icon(Icons.chevron_left_sharp),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ),
+                              SizedBox(width: 16),
+                              Text("Profile", style: TextStyle(fontSize: 17)),
+                            ],
                           ),
-                          child: IconButton(
-                            iconSize: 28,
-                            icon: Icon(Icons.chevron_left_sharp),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
+
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSecondary.withAlpha(150),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: IconButton(
+                              iconSize: 28,
+                              icon: Icon(Icons.more_horiz),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 16),
-                        Text("Profile", style: TextStyle(fontSize: 17)),
-                      ],
-                    ),
-
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSecondary.withAlpha(150),
-                        borderRadius: BorderRadius.circular(15),
+                        ],
                       ),
-                      child: IconButton(
-                        iconSize: 28,
-                        icon: Icon(Icons.more_horiz),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 24),
-                UserAvatar(),
+                      SizedBox(height: 24),
+                      UserAvatar(user: user),
 
-                SizedBox(height: 32),
+                      SizedBox(height: 32),
 
-                // Menu Items
-                Container(
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSurface.withAlpha(16),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Column(
-                    spacing: 8,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      UserMenuItem(
-                        icon: Icon(
-                          Icons.person_2_outlined,
-                          color: Theme.of(context).colorScheme.primary,
+                      // Menu Items
+                      Container(
+                        padding: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withAlpha(16),
+                          borderRadius: BorderRadius.circular(16),
                         ),
-                        title: "Personel Info",
-                        onTap: () => context.push(AppRoutes.userDetail.path),
+                        child: Column(
+                          spacing: 8,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            UserMenuItem(
+                              icon: Icon(
+                                Icons.person_2_outlined,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              title: "Personel Info",
+                              onTap: () =>
+                                  context.push(AppRoutes.userDetail.path),
+                            ),
+                            UserMenuItem(
+                              icon: Icon(
+                                Icons.pending_actions,
+                                color: Colors.deepPurple,
+                              ),
+                              title: "Address",
+                              onTap: () {},
+                            ),
+                          ],
+                        ),
                       ),
-                      UserMenuItem(
-                        icon: Icon(
-                          Icons.pending_actions,
-                          color: Colors.deepPurple,
+
+                      SizedBox(height: 20),
+
+                      Container(
+                        padding: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withAlpha(16),
+                          borderRadius: BorderRadius.circular(16),
                         ),
-                        title: "Address",
-                        onTap: () {},
+                        child: Column(
+                          spacing: 8,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            UserMenuItem(
+                              icon: Icon(
+                                Icons.shopping_bag_outlined,
+                                color: Colors.blueAccent,
+                              ),
+                              title: "Cart",
+                              onTap: () {},
+                            ),
+                            UserMenuItem(
+                              icon: Icon(
+                                Icons.favorite_border,
+                                color: Colors.pink,
+                              ),
+                              title: "Favorites",
+                              onTap: () {},
+                            ),
+                            UserMenuItem(
+                              icon: Icon(
+                                Icons.notifications_outlined,
+                                color: Colors.redAccent,
+                              ),
+                              title: "Notifications",
+                              onTap: () {},
+                            ),
+                            UserMenuItem(
+                              icon: Icon(
+                                Icons.payment_outlined,
+                                color: Colors.orangeAccent,
+                              ),
+                              title: "Payment Methods",
+                              onTap: () {},
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(height: 20),
+                      Container(
+                        padding: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withAlpha(16),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Column(
+                          spacing: 8,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            UserMenuItem(
+                              icon: Icon(
+                                Icons.help_outline,
+                                color: Colors.orangeAccent,
+                              ),
+                              title: "FAQ",
+                              onTap: () {},
+                            ),
+                            UserMenuItem(
+                              icon: Icon(
+                                Icons.rate_review_outlined,
+                                color: Colors.orangeAccent,
+                              ),
+                              title: "User Reviews",
+                              onTap: () {},
+                            ),
+                            UserMenuItem(
+                              icon: Icon(
+                                Icons.settings_outlined,
+                                color: Colors.deepPurpleAccent,
+                              ),
+                              title: "Settings",
+                              onTap: () {},
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(height: 20),
+                      Container(
+                        padding: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withAlpha(16),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Consumer<AuthProvider>(
+                          builder: (context, authProvider, child) {
+                            return UserMenuItem(
+                              icon: Icon(Icons.logout, color: Colors.redAccent),
+                              title: "Logout",
+                              onTap: () => logoutClicked(authProvider),
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
-                ),
-
-                SizedBox(height: 20),
-
-                Container(
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSurface.withAlpha(16),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Column(
-                    spacing: 8,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      UserMenuItem(
-                        icon: Icon(
-                          Icons.shopping_bag_outlined,
-                          color: Colors.blueAccent,
-                        ),
-                        title: "Cart",
-                        onTap: () {},
-                      ),
-                      UserMenuItem(
-                        icon: Icon(Icons.favorite_border, color: Colors.pink),
-                        title: "Favorites",
-                        onTap: () {},
-                      ),
-                      UserMenuItem(
-                        icon: Icon(
-                          Icons.notifications_outlined,
-                          color: Colors.redAccent,
-                        ),
-                        title: "Notifications",
-                        onTap: () {},
-                      ),
-                      UserMenuItem(
-                        icon: Icon(
-                          Icons.payment_outlined,
-                          color: Colors.orangeAccent,
-                        ),
-                        title: "Payment Methods",
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: 20),
-                Container(
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSurface.withAlpha(16),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Column(
-                    spacing: 8,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      UserMenuItem(
-                        icon: Icon(
-                          Icons.help_outline,
-                          color: Colors.orangeAccent,
-                        ),
-                        title: "FAQ",
-                        onTap: () {},
-                      ),
-                      UserMenuItem(
-                        icon: Icon(
-                          Icons.rate_review_outlined,
-                          color: Colors.orangeAccent,
-                        ),
-                        title: "User Reviews",
-                        onTap: () {},
-                      ),
-                      UserMenuItem(
-                        icon: Icon(
-                          Icons.settings_outlined,
-                          color: Colors.deepPurpleAccent,
-                        ),
-                        title: "Settings",
-                        onTap: () {},
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: 20),
-                Container(
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSurface.withAlpha(16),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Consumer<AuthProvider>(
-                    builder: (context, authProvider, child) {
-                      return UserMenuItem(
-                        icon: Icon(Icons.logout, color: Colors.redAccent),
-                        title: "Logout",
-                        onTap: () => logoutClicked(authProvider),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
+                );
+              }
+            },
           ),
         ),
       ),

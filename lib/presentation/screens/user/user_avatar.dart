@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:yumzi/data/models/entity/user_model.dart';
 
 class UserAvatar extends StatelessWidget {
-  const UserAvatar({super.key});
+  final UserModel? user;
+  const UserAvatar({super.key, this.user});
 
   @override
   Widget build(BuildContext context) {
@@ -12,6 +14,12 @@ class UserAvatar extends StatelessWidget {
         CircleAvatar(
           radius: 50,
           backgroundColor: Theme.of(context).colorScheme.primary.withAlpha(150),
+          child: Text(
+            user != null && user!.fullName.isNotEmpty
+                ? user!.fullName[0]
+                : "N/A",
+            style: TextStyle(fontSize: 40, color: Colors.white),
+          ),
         ),
         SizedBox(width: 32),
         Column(
@@ -19,12 +27,14 @@ class UserAvatar extends StatelessWidget {
           children: [
             SizedBox(height: 8),
             Text(
-              "Ismail Durcan",
+              user != null && user!.fullName.isNotEmpty
+                  ? user!.fullName
+                  : "N/A",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 4),
             Text(
-              "email@example.com",
+              user != null && user!.email.isNotEmpty ? user!.email : "N/A",
               style: TextStyle(
                 fontSize: 14,
                 color: Theme.of(context).colorScheme.onSecondary.withAlpha(150),

@@ -45,7 +45,6 @@ class AuthManager {
     }
 
     try {
-      // TODO: Burada refresh token API isteğinizi yapacaksınız
       final response = await AuthService().refreshToken(refreshToken);
       if (response == HttpStatus.ok.toInt()) {
         return true;

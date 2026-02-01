@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:yumzi/core/auth/auth_manager.dart';
 import 'package:yumzi/enums/app_routes.dart';
+import 'package:yumzi/presentation/providers/user_provider.dart';
 import 'package:yumzi/presentation/screens/auth/forgot_password.dart';
 import 'package:yumzi/presentation/screens/auth/login_page.dart';
 import 'package:yumzi/presentation/screens/auth/register_page.dart';
@@ -50,9 +52,9 @@ class AppRouter {
   List<RouteBase> get routes => [
     ShellRoute(
       builder: (context, state, child) {
-        return Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          body: child,
+        return MultiProvider(
+          providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
+          child: child,
         );
       },
       routes: [

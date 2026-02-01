@@ -1,21 +1,21 @@
 import 'package:yumzi/data/models/enums/user_gender.dart';
 
-class DtoUserResponse {
+class UserModel {
   String uniqueId;
   String email;
   String? phoneNumber;
-  String? fullName;
+  String fullName;
   UserGender? gender;
   DateTime? birthOfDate;
   bool emailVerified;
   bool phoneNumberVerified;
   String role;
 
-  DtoUserResponse({
+  UserModel({
     required this.uniqueId,
     required this.email,
     this.phoneNumber,
-    this.fullName,
+    required this.fullName,
     this.gender,
     this.birthOfDate,
     required this.emailVerified,
@@ -23,8 +23,8 @@ class DtoUserResponse {
     required this.role,
   });
 
-  factory DtoUserResponse.fromJson(Map<String, dynamic> json) {
-    return DtoUserResponse(
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
       uniqueId: json['uniqueId'],
       email: json['email'],
       phoneNumber: json['phoneNumber'],
