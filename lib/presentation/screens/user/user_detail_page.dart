@@ -81,8 +81,8 @@ class _UserDetailPageState extends State<UserDetailPage> {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: isVerified
-                        ? Colors.green.withOpacity(0.1)
-                        : Colors.orange.withOpacity(0.1),
+                        ? Colors.green.withAlpha(25)
+                        : Colors.orange.withAlpha(25),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: isVerified ? Colors.green : Colors.orange,

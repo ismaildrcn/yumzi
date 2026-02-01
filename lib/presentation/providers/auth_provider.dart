@@ -80,6 +80,16 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> logout() async {
+    _isLoading = true;
+    notifyListeners();
+
+    await _authService.logout();
+
+    _isLoading = false;
+    notifyListeners();
+  }
+
   void clearError() {
     _errorMessage = null;
     notifyListeners();

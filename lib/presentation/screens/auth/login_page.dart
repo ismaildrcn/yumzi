@@ -304,7 +304,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
     if (loginSuccess) {
       successMessage('Login successful!');
-      // Başarılı giriş sonrası yapılacak işlemler
+      context.go(AppRoutes.home.path);
     } else {
       errorMessage(
         authProvider.errorMessage ?? 'Login failed. Please try again.',

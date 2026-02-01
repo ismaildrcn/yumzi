@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:yumzi/enums/app_routes.dart';
+import 'package:yumzi/presentation/providers/auth_provider.dart';
 import 'package:yumzi/presentation/screens/user/user_avatar.dart';
 import 'package:yumzi/presentation/screens/user/user_menu_item.dart';
 
@@ -199,16 +203,14 @@ class _UserPageState extends State<UserPage> {
                     ).colorScheme.onSurface.withAlpha(16),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Column(
-                    spacing: 8,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      UserMenuItem(
+                  child: Consumer<AuthProvider>(
+                    builder: (context, authProvider, child) {
+                      return UserMenuItem(
                         icon: Icon(Icons.logout, color: Colors.redAccent),
                         title: "Logout",
-                        onTap: () {},
-                      ),
-                    ],
+                        onTap: () => logoutClicked(authProvider),
+                      );
+                    },
                   ),
                 ),
               ],
@@ -216,6 +218,19 @@ class _UserPageState extends State<UserPage> {
           ),
         ),
       ),
+    );
+  }
+
+  void logoutClicked(AuthProvider authProvider) async {
+    await authProvider.logout();
+    if (mounted) {
+      context.go(AppRoutes.login.path);
+    }
+
+    if (!mounted) return;
+    showTopSnackBar(
+      Overlay.of(context),
+      CustomSnackBar.info(message: "You have been logged out."),
     );
   }
 }

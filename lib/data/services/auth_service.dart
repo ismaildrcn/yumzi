@@ -84,6 +84,45 @@ class AuthService {
     }
   }
 
+  Future<int> refreshToken(String refreshToken) async {
+    try {
+      final response = await _dio.post(
+        '/refresh-token',
+        data: {'refreshToken': refreshToken},
+      );
+      if (response.statusCode == 200) {
+        debugPrint('Token yenileme başarılı');
+
+        final data = response.data['payload'];
+        final newAccessToken =
+            data['accessToken'] ?? data['access_token'] ?? data['token'];
+
+        if (newAccessToken != null) {
+          await TokenStorage.saveAccessToken(newAccessToken);
+          debugPrint('🔑 Yeni access token kaydedildi');
+        }
+
+        return HttpStatus.ok;
+      }
+      return HttpStatus.unauthorized;
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        debugPrint('❌ Token yenileme başarısız: Geçersiz refresh token (401)');
+        return HttpStatus.unauthorized;
+      } else {
+        debugPrint(
+          '❌ Token yenileme başarısız: ${e.response?.statusCode ?? "Bilinmeyen hata"}',
+        );
+        return HttpStatus.internalServerError;
+      }
+    } catch (ex) {
+      debugPrint(
+        '❌ Token yenileme başarısız: Beklenmeyen hata: ${ex.toString()}',
+      );
+      return HttpStatus.internalServerError;
+    }
+  }
+
   // Logout - token'ları sil
   Future<void> logout() async {
     await TokenStorage.deleteTokens();
