@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:yumzi/core/auth/auth_manager.dart';
 import 'package:yumzi/enums/app_routes.dart';
+import 'package:yumzi/presentation/providers/address_provider.dart';
 import 'package:yumzi/presentation/providers/user_provider.dart';
 import 'package:yumzi/presentation/screens/address/address_page.dart';
 import 'package:yumzi/presentation/screens/auth/forgot_password.dart';
@@ -54,7 +55,10 @@ class AppRouter {
     ShellRoute(
       builder: (context, state, child) {
         return MultiProvider(
-          providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
+          providers: [
+            ChangeNotifierProvider(create: (_) => UserProvider()),
+            ChangeNotifierProvider(create: (_) => AddressProvider()),
+          ],
           child: child,
         );
       },

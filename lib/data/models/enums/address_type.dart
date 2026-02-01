@@ -1,7 +1,7 @@
 enum AddressType {
-  home("Home"),
-  work("Work"),
-  other("Other");
+  home("HOME"),
+  work("WORK"),
+  other("OTHER");
 
   final String value;
   const AddressType(this.value);

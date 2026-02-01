@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yumzi/data/models/entity/address_entity.dart';
 import 'package:yumzi/data/models/enums/address_type.dart';
+import 'package:yumzi/presentation/providers/address_provider.dart';
 
 class AddressPage extends StatefulWidget {
   const AddressPage({super.key});
@@ -9,75 +12,121 @@ class AddressPage extends StatefulWidget {
 }
 
 class _AddressPageState extends State<AddressPage> {
+  List<AddressEntity> addresses = [];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
+  }
+
+  void _loadData() async {
+    final addressProvider = Provider.of<AddressProvider>(
+      context,
+      listen: false,
+    );
+    final fetchedAddresses = await addressProvider.fetchAddresses() ?? [];
+    setState(() {
+      addresses = fetchedAddresses;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.onSecondary.withAlpha(150),
-                              borderRadius: BorderRadius.circular(15),
+        child: Consumer<AddressProvider>(
+          builder: (context, addressProvider, child) {
+            if (addressProvider.isLoading) {
+              return Center(child: CircularProgressIndicator());
+            } else {
+              return Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.onSecondary.withAlpha(150),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  child: IconButton(
+                                    iconSize: 28,
+                                    icon: Icon(Icons.chevron_left_sharp),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ),
+                                SizedBox(width: 16),
+                                Text(
+                                  "My Address",
+                                  style: TextStyle(fontSize: 17),
+                                ),
+                              ],
                             ),
-                            child: IconButton(
-                              iconSize: 28,
-                              icon: Icon(Icons.chevron_left_sharp),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ),
-                          SizedBox(width: 16),
-                          Text("My Address", style: TextStyle(fontSize: 17)),
-                        ],
+                            SizedBox(height: 24),
+                            addressCards(context, addressProvider),
+                          ],
+                        ),
                       ),
-                      SizedBox(height: 24),
-                      addressCard(context),
-                    ],
+                    ),
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24.0,
-                vertical: 16,
-              ),
-              child: ElevatedButton(
-                onPressed: () => {},
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(MediaQuery.of(context).size.width, 56),
-                  textStyle: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0,
+                      vertical: 16,
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () => {},
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size(
+                          MediaQuery.of(context).size.width,
+                          56,
+                        ),
+                        textStyle: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: const Text('Add New Address'),
+                    ),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text('Add New Address'),
-              ),
-            ),
-          ],
+                ],
+              );
+            }
+          },
         ),
       ),
     );
   }
 
-  Container addressCard(BuildContext context) {
-    final addressType = AddressType.home;
+  Widget addressCards(BuildContext context, AddressProvider addressProvider) {
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) =>
+          addressCard(context, addressProvider.addresses[index]),
+      separatorBuilder: (context, index) => SizedBox(height: 16),
+      itemCount: addressProvider.addresses.length,
+    );
+  }
+
+  Widget addressCard(BuildContext context, AddressEntity address) {
+    final addressType = address.addressType;
     Icon icon;
 
     if (addressType == AddressType.home) {
@@ -93,6 +142,19 @@ class _AddressPageState extends State<AddressPage> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.onSurface.withAlpha(16),
         borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor.withAlpha(16),
+            blurRadius: 4,
+            offset: Offset(0, 4),
+          ),
+        ],
+        border: address.isDefault
+            ? Border.all(
+                color: Theme.of(context).colorScheme.primary.withAlpha(128),
+                width: 1.5,
+              )
+            : null,
       ),
       child: Row(
         children: [
@@ -114,7 +176,7 @@ class _AddressPageState extends State<AddressPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "HOME",
+                      address.title,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -149,7 +211,7 @@ class _AddressPageState extends State<AddressPage> {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  "123 Main St, City, Country",
+                  "${address.addressLine1}, ${address.addressLine2 ?? ''} ${address.district}, ${address.city}/${address.state}, ${address.country}",
                   style: TextStyle(
                     fontSize: 14,
                     color: Theme.of(

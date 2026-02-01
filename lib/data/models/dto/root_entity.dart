@@ -1,6 +1,6 @@
 class RootEntity {
   final int status;
-  final Map<String, dynamic>? payload;
+  final dynamic payload;
   final RequestException? exception;
   final String? errorMessage;
   RootEntity({
