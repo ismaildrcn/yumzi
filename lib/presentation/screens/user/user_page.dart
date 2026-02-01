@@ -134,7 +134,9 @@ class _UserPageState extends State<UserPage> {
                                 color: Colors.deepPurple,
                               ),
                               title: "Address",
-                              onTap: () {},
+                              onTap: () {
+                                context.push(AppRoutes.address.path);
+                              },
                             ),
                           ],
                         ),
