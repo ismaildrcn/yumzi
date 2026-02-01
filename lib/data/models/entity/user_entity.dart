@@ -1,6 +1,6 @@
 import 'package:yumzi/data/models/enums/user_gender.dart';
 
-class UserModel {
+class UserEntity {
   String uniqueId;
   String email;
   String? phoneNumber;
@@ -9,9 +9,8 @@ class UserModel {
   DateTime? birthOfDate;
   bool emailVerified;
   bool phoneNumberVerified;
-  String role;
 
-  UserModel({
+  UserEntity({
     required this.uniqueId,
     required this.email,
     this.phoneNumber,
@@ -20,11 +19,10 @@ class UserModel {
     this.birthOfDate,
     required this.emailVerified,
     required this.phoneNumberVerified,
-    required this.role,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
+  factory UserEntity.fromJson(Map<String, dynamic> json) {
+    return UserEntity(
       uniqueId: json['uniqueId'],
       email: json['email'],
       phoneNumber: json['phoneNumber'],
@@ -37,7 +35,18 @@ class UserModel {
           : null,
       emailVerified: json['emailVerified'],
       phoneNumberVerified: json['phoneNumberVerified'],
-      role: json['role'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'email': email,
+      'phoneNumber': phoneNumber,
+      'fullName': fullName,
+      'gender': gender?.value,
+      'birthOfDate': birthOfDate?.toIso8601String(),
+      'emailVerified': emailVerified,
+      'phoneNumberVerified': phoneNumberVerified,
+    };
   }
 }

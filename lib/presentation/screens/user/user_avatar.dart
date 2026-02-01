@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:yumzi/data/models/entity/user_model.dart';
+import 'package:yumzi/data/models/entity/user_entity.dart';
 
 class UserAvatar extends StatelessWidget {
-  final UserModel? user;
+  final UserEntity? user;
   const UserAvatar({super.key, this.user});
 
   @override

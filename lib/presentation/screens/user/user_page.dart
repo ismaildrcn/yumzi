@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
-import 'package:yumzi/data/models/entity/user_model.dart';
+import 'package:yumzi/data/models/entity/user_entity.dart';
 import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/auth_provider.dart';
 import 'package:yumzi/presentation/providers/user_provider.dart';
@@ -18,7 +18,7 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
-  UserModel? user;
+  UserEntity? user;
 
   @override
   void initState() {
@@ -123,8 +123,10 @@ class _UserPageState extends State<UserPage> {
                                 color: Theme.of(context).colorScheme.primary,
                               ),
                               title: "Personel Info",
-                              onTap: () =>
-                                  context.push(AppRoutes.userDetail.path),
+                              onTap: () => context.push(
+                                AppRoutes.userDetail.path,
+                                extra: user,
+                              ),
                             ),
                             UserMenuItem(
                               icon: Icon(

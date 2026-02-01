@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:yumzi/data/models/entity/user_model.dart';
 import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/user_provider.dart';
 import 'package:yumzi/presentation/screens/user/user_avatar.dart';
@@ -15,27 +14,18 @@ class UserDetailPage extends StatefulWidget {
 }
 
 class _UserDetailPageState extends State<UserDetailPage> {
-  UserModel? user;
   bool isVerified = false;
+  bool _isInitialized = false;
 
   @override
   void initState() {
     super.initState();
-    isVerified = false; // Example initialization
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadUser();
+      if (!_isInitialized) {
+        context.read<UserProvider>().fetchUser();
+        _isInitialized = true;
+      }
     });
-  }
-
-  Future<void> _loadUser() async {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final fetchedUser = await userProvider.fetchUser();
-    if (mounted) {
-      setState(() {
-        user = fetchedUser;
-        isVerified = user?.emailVerified ?? false;
-      });
-    }
   }
 
   @override
@@ -49,6 +39,9 @@ class _UserDetailPageState extends State<UserDetailPage> {
             } else if (userProvider.errorMessage != null) {
               return Center(child: Text('Error: ${userProvider.errorMessage}'));
             } else {
+              final user = userProvider.user; // Provider'dan user al
+              final isVerified = user?.emailVerified ?? false;
+
               return SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -94,7 +87,10 @@ class _UserDetailPageState extends State<UserDetailPage> {
                               iconSize: 28,
                               icon: Icon(Icons.edit_note_sharp),
                               onPressed: () {
-                                context.push(AppRoutes.userEdit.path);
+                                context.push(
+                                  AppRoutes.userEdit.path,
+                                  extra: user,
+                                );
                               },
                             ),
                           ),
