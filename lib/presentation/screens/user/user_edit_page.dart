@@ -400,6 +400,16 @@ class _UserEditPageState extends State<UserEditPage> {
       errorMessage("User data is not available.");
       return;
     }
+    if (user.fullName == _fullNameController.text &&
+        user.email == _emailController.text &&
+        (user.phoneNumber ?? '') == _phoneNumberController.text &&
+        (user.birthOfDate != null
+                ? user.birthOfDate!.toLocal().toString().split(' ')[0]
+                : '') ==
+            _birthDateController.text) {
+      Navigator.pop(context);
+      return;
+    }
     UserEntity updatedUser = UserEntity(
       uniqueId: user.uniqueId,
       email: _emailController.text,
