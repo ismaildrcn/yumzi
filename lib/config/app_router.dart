@@ -5,6 +5,7 @@ import 'package:yumzi/core/auth/auth_manager.dart';
 import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/address_provider.dart';
 import 'package:yumzi/presentation/providers/user_provider.dart';
+import 'package:yumzi/presentation/screens/address/add_address_page.dart';
 import 'package:yumzi/presentation/screens/address/address_page.dart';
 import 'package:yumzi/presentation/screens/auth/forgot_password.dart';
 import 'package:yumzi/presentation/screens/auth/login_page.dart';
@@ -123,6 +124,11 @@ class AppRouter {
           name: AppRoutes.address.name,
           path: AppRoutes.address.path,
           builder: (context, state) => AddressPage(),
+        ),
+        GoRoute(
+          name: AppRoutes.addAddress.name,
+          path: AppRoutes.addAddress.path,
+          builder: (context, state) => AddAddressPage(),
         ),
       ],
     ),

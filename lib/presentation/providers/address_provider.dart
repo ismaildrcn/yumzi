@@ -38,4 +38,27 @@ class AddressProvider extends ChangeNotifier {
       return null;
     }
   }
+
+  Future<int> saveAddress(AddressEntity address) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final rootEntity = await _addressService.saveAddress(address);
+      if (rootEntity.status == 200) {
+        _addresses.add(address);
+        return rootEntity.status;
+      } else {
+        _errorMessage = 'Failed to add address.';
+        return rootEntity.status;
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
+      return -1;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }

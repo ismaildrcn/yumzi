@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:yumzi/data/models/entity/address_entity.dart';
 import 'package:yumzi/data/models/enums/address_type.dart';
+import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/address_provider.dart';
 
 class AddressPage extends StatefulWidget {
@@ -88,7 +90,7 @@ class _AddressPageState extends State<AddressPage> {
                       vertical: 16,
                     ),
                     child: ElevatedButton(
-                      onPressed: () => {},
+                      onPressed: () => context.push(AppRoutes.addAddress.path),
                       style: ElevatedButton.styleFrom(
                         minimumSize: Size(
                           MediaQuery.of(context).size.width,

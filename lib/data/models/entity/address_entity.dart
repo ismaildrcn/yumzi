@@ -1,7 +1,7 @@
 import 'package:yumzi/data/models/enums/address_type.dart';
 
 class AddressEntity {
-  String uniqueId;
+  String? uniqueId;
   String title;
   AddressType addressType;
   String addressLine1;
@@ -17,7 +17,7 @@ class AddressEntity {
   bool isDefault;
 
   AddressEntity({
-    required this.uniqueId,
+    this.uniqueId,
     required this.title,
     required this.addressType,
     required this.addressLine1,
