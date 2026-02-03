@@ -28,6 +28,17 @@ class AddressService {
     }
   }
 
+  Future<RootEntity> deleteAddress(String uniqueId) async {
+    final response = await _dio.delete(
+      '$urlPrefix/address/delete/$uniqueId',
+    );
+    if (response.data["status"] == 200) {
+      return RootEntity.fromJson(response.data);
+    } else {
+      throw Exception('Adres silinemedi');
+    }
+  }
+
   Future<RootEntity> fetchProvinces() async {
     final response = await _dio.get('$urlPrefix/addresses/provinces');
     if (response.data["status"] == 200) {

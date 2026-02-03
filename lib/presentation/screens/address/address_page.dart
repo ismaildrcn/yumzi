@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:top_snackbar_flutter/custom_snack_bar.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:yumzi/data/models/entity/address_entity.dart';
 import 'package:yumzi/data/models/enums/address_type.dart';
 import 'package:yumzi/enums/app_routes.dart';
@@ -120,14 +122,21 @@ class _AddressPageState extends State<AddressPage> {
     return ListView.separated(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) =>
-          addressCard(context, addressProvider.addresses[index]),
+      itemBuilder: (context, index) => addressCard(
+        context,
+        addressProvider,
+        addressProvider.addresses[index],
+      ),
       separatorBuilder: (context, index) => SizedBox(height: 16),
       itemCount: addressProvider.addresses.length,
     );
   }
 
-  Widget addressCard(BuildContext context, AddressEntity address) {
+  Widget addressCard(
+    BuildContext context,
+    AddressProvider addressProvider,
+    AddressEntity address,
+  ) {
     final addressType = address.addressType;
     Icon icon;
 
@@ -198,9 +207,19 @@ class _AddressPageState extends State<AddressPage> {
                         ),
                         SizedBox(width: 16),
                         GestureDetector(
-                          onTap: () {
-                            // Delete address action
+                          onTap: () async {
                             debugPrint("Delete address tapped");
+                            int status = await addressProvider.deleteAddress(
+                              address.uniqueId!,
+                            );
+                            if (status == 200) {
+                              successMessage('Address deleted successfully');
+                            } else {
+                              errorMessage(
+                                addressProvider.errorMessage ??
+                                    'Failed to delete address',
+                              );
+                            }
                           },
                           child: Icon(
                             Icons.delete_outlined,
@@ -226,6 +245,20 @@ class _AddressPageState extends State<AddressPage> {
           ),
         ],
       ),
+    );
+  }
+
+  void errorMessage(String message) {
+    showTopSnackBar(
+      Overlay.of(context),
+      CustomSnackBar.error(message: message),
+    );
+  }
+
+  void successMessage(String message) {
+    showTopSnackBar(
+      Overlay.of(context),
+      CustomSnackBar.success(message: message),
     );
   }
 }

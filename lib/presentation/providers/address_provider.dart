@@ -72,6 +72,30 @@ class AddressProvider extends ChangeNotifier {
     }
   }
 
+  Future<int> deleteAddress(String uniqueId) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final rootEntity = await _addressService.deleteAddress(uniqueId);
+      if (rootEntity.status == 200) {
+        _addresses.removeWhere((address) => address.uniqueId == uniqueId);
+        return rootEntity.status;
+      } else {
+        _errorMessage = 'Failed to delete address.';
+        return rootEntity.status;
+      }
+    } catch (e) {
+      _errorMessage = 'Failed to delete address.';
+      return -1;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+
   Future<int> fetchProvinces() async {
     _isLoading = true;
     _errorMessage = null;
