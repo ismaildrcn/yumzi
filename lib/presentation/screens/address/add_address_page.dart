@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:yumzi/data/models/entity/address_entity.dart';
 import 'package:yumzi/data/models/enums/address_type.dart';
+import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/address_provider.dart';
-import 'package:yumzi/presentation/screens/address/map_widget.dart';
 
 class AddAddressPage extends StatefulWidget {
-  const AddAddressPage({super.key});
+  final LatLng selectedPoint;
+  const AddAddressPage({super.key, required this.selectedPoint});
 
   @override
   State<AddAddressPage> createState() => _AddAddressPageState();
@@ -29,7 +31,6 @@ class _AddAddressPageState extends State<AddAddressPage> {
   final TextEditingController _phoneNumberController = TextEditingController();
 
   final MapController mapController = MapController();
-  LatLng? selectedPoint;
   AddressType selectedAddressType = AddressType.home;
 
   @override
@@ -77,22 +78,6 @@ class _AddAddressPageState extends State<AddAddressPage> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(24),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 250,
-                      child: MapWidget(
-                        initialPosition: LatLng(36.894267, 30.697291),
-                        onLocationSelected: (LatLng location) {
-                          setState(() {
-                            selectedPoint = location;
-                          });
-                        },
-                      ),
                     ),
                   ),
 
@@ -640,8 +625,8 @@ class _AddAddressPageState extends State<AddAddressPage> {
       recipientName: _recipientNameController.text.trim(),
       phoneNumber: _phoneNumberController.text.trim(),
       addressType: selectedAddressType,
-      latitude: selectedPoint?.latitude.toString() ?? '',
-      longitude: selectedPoint?.longitude.toString() ?? '',
+      latitude: widget.selectedPoint.latitude.toString(),
+      longitude: widget.selectedPoint.longitude.toString(),
       isDefault: false,
     );
 
@@ -649,7 +634,7 @@ class _AddAddressPageState extends State<AddAddressPage> {
       if (status == 200) {
         if (!mounted) return;
         successMessage('Address saved successfully.');
-        Navigator.pop(context);
+        context.push(AppRoutes.address.path);
       } else {
         if (!mounted) return;
         errorMessage(addressProvider.errorMessage ?? 'Failed to save address.');

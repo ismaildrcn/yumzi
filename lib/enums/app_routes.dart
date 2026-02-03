@@ -9,6 +9,7 @@ enum AppRoutes {
   userDetail("/user-detail"),
   userEdit("/user-edit"),
   address("/address"),
+  deliveryLocation("/delivery-location"),
   addAddress("/add-address"),
   restaurant("/restaurant"),
   menuItem("/menu-item"),

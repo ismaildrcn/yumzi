@@ -68,7 +68,7 @@ class _AddressPageState extends State<AddressPage> {
                                     iconSize: 28,
                                     icon: Icon(Icons.chevron_left_sharp),
                                     onPressed: () {
-                                      Navigator.pop(context);
+                                      context.push(AppRoutes.user.path);
                                     },
                                   ),
                                 ),
@@ -92,7 +92,8 @@ class _AddressPageState extends State<AddressPage> {
                       vertical: 16,
                     ),
                     child: ElevatedButton(
-                      onPressed: () => context.push(AppRoutes.addAddress.path),
+                      onPressed: () =>
+                          context.push(AppRoutes.deliveryLocation.path),
                       style: ElevatedButton.styleFrom(
                         minimumSize: Size(
                           MediaQuery.of(context).size.width,
