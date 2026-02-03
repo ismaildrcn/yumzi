@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:yumzi/data/models/entity/user_entity.dart';
 import 'package:yumzi/data/models/enums/user_gender.dart';
 import 'package:yumzi/presentation/providers/user_provider.dart';
 import 'package:yumzi/presentation/screens/user/gender_widget.dart';
+import 'package:yumzi/presentation/widgets/message_box.dart';
 
 class UserEditPage extends StatefulWidget {
   const UserEditPage({super.key});
@@ -397,7 +396,7 @@ class _UserEditPageState extends State<UserEditPage> {
   void updateUserProfile(UserProvider userProvider) async {
     final user = userProvider.user;
     if (user == null) {
-      errorMessage("User data is not available.");
+      MessageBox.error(context, "User data is not available.");
       return;
     }
     if (user.fullName == _fullNameController.text &&
@@ -425,24 +424,10 @@ class _UserEditPageState extends State<UserEditPage> {
     if (!mounted) return;
 
     if (result != null) {
-      successMessage("Profile updated successfully");
+      MessageBox.success(context, "Profile updated successfully");
       Navigator.pop(context);
     } else if (userProvider.errorMessage != null) {
-      errorMessage(userProvider.errorMessage!);
+      MessageBox.error(context, userProvider.errorMessage!);
     }
-  }
-
-  void errorMessage(String message) {
-    showTopSnackBar(
-      Overlay.of(context),
-      CustomSnackBar.error(message: message),
-    );
-  }
-
-  void successMessage(String message) {
-    showTopSnackBar(
-      Overlay.of(context),
-      CustomSnackBar.success(message: message),
-    );
   }
 }

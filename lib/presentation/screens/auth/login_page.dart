@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/auth_provider.dart';
 import 'package:yumzi/presentation/screens/auth/auth_skeleton.dart';
+import 'package:yumzi/presentation/widgets/message_box.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -293,7 +292,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   void loginClicked(AuthProvider authProvider) async {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       // Hata mesajı göster
-      errorMessage('Please fill in all fields.');
+      MessageBox.error(context, 'Please fill in all fields.');
       return;
     }
     bool loginSuccess = await authProvider.login(
@@ -303,26 +302,13 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     if (!mounted) return;
 
     if (loginSuccess) {
-      successMessage('Login successful!');
+      MessageBox.success(context, 'Login successful!');
       context.go(AppRoutes.home.path);
     } else {
-      errorMessage(
+      MessageBox.error(
+        context,
         authProvider.errorMessage ?? 'Login failed. Please try again.',
       );
     }
-  }
-
-  void errorMessage(String message) {
-    showTopSnackBar(
-      Overlay.of(context),
-      CustomSnackBar.error(message: message),
-    );
-  }
-
-  void successMessage(String message) {
-    showTopSnackBar(
-      Overlay.of(context),
-      CustomSnackBar.success(message: message),
-    );
   }
 }

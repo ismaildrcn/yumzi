@@ -7,6 +7,7 @@ import 'package:yumzi/data/models/entity/address_entity.dart';
 import 'package:yumzi/data/models/enums/address_type.dart';
 import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/address_provider.dart';
+import 'package:yumzi/presentation/widgets/message_box.dart';
 
 class AddressPage extends StatefulWidget {
   const AddressPage({super.key});
@@ -213,10 +214,15 @@ class _AddressPageState extends State<AddressPage> {
                             int status = await addressProvider.deleteAddress(
                               address.uniqueId!,
                             );
+                            if (!context.mounted) return;
                             if (status == 200) {
-                              successMessage('Address deleted successfully');
+                              MessageBox.success(
+                                context,
+                                'Address deleted successfully',
+                              );
                             } else {
-                              errorMessage(
+                              MessageBox.error(
+                                context,
                                 addressProvider.errorMessage ??
                                     'Failed to delete address',
                               );

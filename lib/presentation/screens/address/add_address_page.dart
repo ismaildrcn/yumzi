@@ -3,12 +3,11 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
-import 'package:top_snackbar_flutter/custom_snack_bar.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:yumzi/data/models/entity/address_entity.dart';
 import 'package:yumzi/data/models/enums/address_type.dart';
 import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/address_provider.dart';
+import 'package:yumzi/presentation/widgets/message_box.dart';
 
 class AddAddressPage extends StatefulWidget {
   final LatLng selectedPoint;
@@ -633,11 +632,14 @@ class _AddAddressPageState extends State<AddAddressPage> {
     addressProvider.saveAddress(newAddress).then((status) {
       if (status == 200) {
         if (!mounted) return;
-        successMessage('Address saved successfully.');
+        MessageBox.success(context, 'Address saved successfully.');
         context.push(AppRoutes.address.path);
       } else {
         if (!mounted) return;
-        errorMessage(addressProvider.errorMessage ?? 'Failed to save address.');
+        MessageBox.error(
+          context,
+          addressProvider.errorMessage ?? 'Failed to save address.',
+        );
       }
     });
   }
@@ -645,19 +647,5 @@ class _AddAddressPageState extends State<AddAddressPage> {
   void onProvinceTap(AddressProvider addressProvider, String? value) {
     _provinceController.text = value ?? '';
     addressProvider.fetchDistricts(value!);
-  }
-
-  void errorMessage(String message) {
-    showTopSnackBar(
-      Overlay.of(context),
-      CustomSnackBar.error(message: message),
-    );
-  }
-
-  void successMessage(String message) {
-    showTopSnackBar(
-      Overlay.of(context),
-      CustomSnackBar.success(message: message),
-    );
   }
 }
