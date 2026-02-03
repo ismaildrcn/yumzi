@@ -213,7 +213,7 @@ class _AddressPageState extends State<AddressPage> {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  "${address.addressLine1}, ${address.addressLine2 ?? ''} ${address.district}, ${address.city}/${address.state}, ${address.country}",
+                  "${address.addressLine1}, ${address.addressLine2 ?? ''} ${address.neighborhood}, ${address.district}/${address.province}, ${address.country}",
                   style: TextStyle(
                     fontSize: 14,
                     color: Theme.of(

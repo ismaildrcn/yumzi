@@ -6,9 +6,9 @@ class AddressEntity {
   AddressType addressType;
   String addressLine1;
   String? addressLine2;
+  String neighborhood;
   String district;
-  String city;
-  String state;
+  String province;
   String country;
   String recipientName;
   String phoneNumber;
@@ -22,9 +22,9 @@ class AddressEntity {
     required this.addressType,
     required this.addressLine1,
     this.addressLine2,
+    required this.neighborhood,
     required this.district,
-    required this.city,
-    required this.state,
+    required this.province,
     required this.country,
     required this.recipientName,
     required this.phoneNumber,
@@ -42,15 +42,15 @@ class AddressEntity {
       ),
       addressLine1: json['addressLine1'],
       addressLine2: json['addressLine2'],
+      neighborhood: json['neighborhood'],
       district: json['district'],
-      city: json['city'],
-      state: json['state'],
+      province: json['province'],
       country: json['country'],
       recipientName: json['recipientName'],
       phoneNumber: json['phoneNumber'],
       latitude: json['latitude'],
       longitude: json['longitude'],
-      isDefault: json['default'],
+      isDefault: json['isDefault'] ?? json['default'] ?? false,
     );
   }
 
@@ -60,15 +60,15 @@ class AddressEntity {
       'addressType': addressType.value,
       'addressLine1': addressLine1,
       'addressLine2': addressLine2,
+      'neighborhood': neighborhood,
       'district': district,
-      'city': city,
-      'state': state,
+      'province': province,
       'country': country,
       'recipientName': recipientName,
       'phoneNumber': phoneNumber,
       'latitude': latitude,
       'longitude': longitude,
-      'default': isDefault,
+      'isDefault': isDefault,
     };
   }
 }
