@@ -200,6 +200,10 @@ class _AddressPageState extends State<AddressPage> {
                         GestureDetector(
                           onTap: () {
                             // Edit address action
+                            context.push(
+                              AppRoutes.saveAddress.path,
+                              extra: address,
+                            );
                             debugPrint("Edit address tapped");
                           },
                           child: Icon(

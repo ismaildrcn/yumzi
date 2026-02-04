@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:yumzi/data/models/entity/address_entity.dart';
+import 'package:yumzi/data/models/enums/address_type.dart';
 import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/screens/address/map_widget.dart';
 
@@ -108,15 +110,7 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
                 vertical: 16,
               ),
               child: ElevatedButton(
-                onPressed: () => {
-                  if (selectedPoint != null)
-                    {
-                      context.push(
-                        AppRoutes.addAddress.path,
-                        extra: selectedPoint,
-                      ),
-                    },
-                },
+                onPressed: () => onSaveButtonTap(),
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(MediaQuery.of(context).size.width, 56),
                   textStyle: TextStyle(
@@ -134,5 +128,26 @@ class _DeliveryLocationPageState extends State<DeliveryLocationPage> {
         ),
       ),
     );
+  }
+
+  void onSaveButtonTap() {
+    if (selectedPoint != null) {
+      AddressEntity selectedAddress = AddressEntity(
+        title: "",
+        addressLine1: "",
+        addressLine2: "",
+        country: "",
+        province: "",
+        district: "",
+        neighborhood: "",
+        latitude: selectedPoint!.latitude.toString(),
+        longitude: selectedPoint!.longitude.toString(),
+        addressType: AddressType.other,
+        recipientName: "",
+        phoneNumber: "",
+        isDefault: false,
+      );
+      context.push(AppRoutes.saveAddress.path, extra: selectedAddress);
+    }
   }
 }

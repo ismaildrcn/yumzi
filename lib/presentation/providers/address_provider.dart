@@ -72,6 +72,32 @@ class AddressProvider extends ChangeNotifier {
     }
   }
 
+  Future<int> updateAddress(AddressEntity address) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final rootEntity = await _addressService.updateAddress(address);
+      if (rootEntity.status == 200) {
+        int index = _addresses.indexWhere((a) => a.uniqueId == address.uniqueId);
+        if (index != -1) {
+          _addresses[index] = address;
+        }
+        return rootEntity.status;
+      } else {
+        _errorMessage = 'Failed to update address.';
+        return rootEntity.status;
+      }
+    } catch (e) {
+      _errorMessage = 'Failed to update address.';
+      return -1;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   Future<int> deleteAddress(String uniqueId) async {
     _isLoading = true;
     _errorMessage = null;

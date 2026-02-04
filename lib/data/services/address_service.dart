@@ -28,10 +28,20 @@ class AddressService {
     }
   }
 
-  Future<RootEntity> deleteAddress(String uniqueId) async {
-    final response = await _dio.delete(
-      '$urlPrefix/address/delete/$uniqueId',
+  Future<RootEntity> updateAddress(AddressEntity address) async {
+    final response = await _dio.patch(
+      '$urlPrefix/address/update/${address.uniqueId}',
+      data: address.toJson(),
     );
+    if (response.data["status"] == 200) {
+      return RootEntity.fromJson(response.data);
+    } else {
+      throw Exception('Adres güncellenemedi');
+    }
+  }
+
+  Future<RootEntity> deleteAddress(String uniqueId) async {
+    final response = await _dio.delete('$urlPrefix/address/delete/$uniqueId');
     if (response.data["status"] == 200) {
       return RootEntity.fromJson(response.data);
     } else {

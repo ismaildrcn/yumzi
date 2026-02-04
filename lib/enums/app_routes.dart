@@ -10,7 +10,7 @@ enum AppRoutes {
   userEdit("/user-edit"),
   address("/address"),
   deliveryLocation("/delivery-location"),
-  addAddress("/add-address"),
+  saveAddress("/save-address"),
   restaurant("/restaurant"),
   menuItem("/menu-item"),
   cart("/cart");

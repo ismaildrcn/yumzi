@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:yumzi/data/models/entity/address_entity.dart';
 import 'package:yumzi/data/models/enums/address_type.dart';
@@ -9,15 +8,15 @@ import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/address_provider.dart';
 import 'package:yumzi/presentation/widgets/message_box.dart';
 
-class AddAddressPage extends StatefulWidget {
-  final LatLng selectedPoint;
-  const AddAddressPage({super.key, required this.selectedPoint});
+class SaveAddressPage extends StatefulWidget {
+  final AddressEntity? initialAddress;
+  const SaveAddressPage({super.key, this.initialAddress});
 
   @override
-  State<AddAddressPage> createState() => _AddAddressPageState();
+  State<SaveAddressPage> createState() => _SaveAddressPageState();
 }
 
-class _AddAddressPageState extends State<AddAddressPage> {
+class _SaveAddressPageState extends State<SaveAddressPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _addressLine1Controller = TextEditingController();
   final TextEditingController _districtController = TextEditingController();
@@ -32,11 +31,41 @@ class _AddAddressPageState extends State<AddAddressPage> {
   final MapController mapController = MapController();
   AddressType selectedAddressType = AddressType.home;
 
+  bool get isEditMode => widget.initialAddress?.uniqueId != null;
+
   @override
   void initState() {
     super.initState();
+    _initializeFormFields();
+    _loadInitialData();
+  }
+
+  void _initializeFormFields() {
+    if (isEditMode) {
+      final address = widget.initialAddress!;
+      _addressLine1Controller.text = address.addressLine1;
+      _districtController.text = address.district;
+      _provinceController.text = address.province;
+      _neighborhoodController.text = address.neighborhood;
+      _titleController.text = address.title;
+      _recipientNameController.text = address.recipientName;
+      _phoneNumberController.text = address.phoneNumber;
+      selectedAddressType = address.addressType;
+    }
+  }
+
+  void _loadInitialData() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<AddressProvider>(context, listen: false).fetchProvinces();
+      final addressProvider = Provider.of<AddressProvider>(
+        context,
+        listen: false,
+      );
+      addressProvider.fetchProvinces();
+
+      // Edit modundaysa ve province bilgisi varsa, district listesini yükle
+      if (isEditMode && _provinceController.text.isNotEmpty) {
+        addressProvider.fetchDistricts(_provinceController.text);
+      }
     });
   }
 
@@ -366,7 +395,13 @@ class _AddAddressPageState extends State<AddAddressPage> {
                         child: Text(province ?? ''),
                       );
                     }).toList(),
-                    onChanged: (value) => onProvinceTap(addressProvider, value),
+                    onChanged: (value) {
+                      _provinceController.text = value ?? '';
+                      addressProvider.fetchDistricts(value!);
+                    },
+                    value: _provinceController.text.isNotEmpty
+                        ? _provinceController.text
+                        : null,
                   ),
                 ],
               ),
@@ -425,6 +460,9 @@ class _AddAddressPageState extends State<AddAddressPage> {
                     onChanged: (value) {
                       _districtController.text = value ?? '';
                     },
+                    value: _districtController.text.isNotEmpty
+                        ? _districtController.text
+                        : null,
                   ),
                 ],
               ),
@@ -624,28 +662,39 @@ class _AddAddressPageState extends State<AddAddressPage> {
       recipientName: _recipientNameController.text.trim(),
       phoneNumber: _phoneNumberController.text.trim(),
       addressType: selectedAddressType,
-      latitude: widget.selectedPoint.latitude.toString(),
-      longitude: widget.selectedPoint.longitude.toString(),
+      latitude: widget.initialAddress?.latitude ?? "",
+      longitude: widget.initialAddress?.longitude ?? "",
       isDefault: false,
     );
-
-    addressProvider.saveAddress(newAddress).then((status) {
-      if (status == 200) {
-        if (!mounted) return;
-        MessageBox.success(context, 'Address saved successfully.');
-        context.push(AppRoutes.address.path);
-      } else {
-        if (!mounted) return;
-        MessageBox.error(
-          context,
-          addressProvider.errorMessage ?? 'Failed to save address.',
-        );
-      }
-    });
-  }
-
-  void onProvinceTap(AddressProvider addressProvider, String? value) {
-    _provinceController.text = value ?? '';
-    addressProvider.fetchDistricts(value!);
+    if (isEditMode) {
+      newAddress.uniqueId = widget.initialAddress!.uniqueId;
+      addressProvider.updateAddress(newAddress).then((status) {
+        if (status == 200) {
+          if (!mounted) return;
+          MessageBox.success(context, 'Address updated successfully.');
+          context.push(AppRoutes.address.path);
+        } else {
+          if (!mounted) return;
+          MessageBox.error(
+            context,
+            addressProvider.errorMessage ?? 'Failed to update address.',
+          );
+        }
+      });
+    } else {
+      addressProvider.saveAddress(newAddress).then((status) {
+        if (status == 200) {
+          if (!mounted) return;
+          MessageBox.success(context, 'Address saved successfully.');
+          context.push(AppRoutes.address.path);
+        } else {
+          if (!mounted) return;
+          MessageBox.error(
+            context,
+            addressProvider.errorMessage ?? 'Failed to save address.',
+          );
+        }
+      });
+    }
   }
 }

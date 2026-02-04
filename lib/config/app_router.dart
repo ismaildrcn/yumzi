@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:yumzi/core/auth/auth_manager.dart';
+import 'package:yumzi/data/models/entity/address_entity.dart';
 import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/address_provider.dart';
 import 'package:yumzi/presentation/providers/user_provider.dart';
-import 'package:yumzi/presentation/screens/address/add_address_page.dart';
 import 'package:yumzi/presentation/screens/address/address_page.dart';
 import 'package:yumzi/presentation/screens/address/delivery_location_page.dart';
+import 'package:yumzi/presentation/screens/address/save_address_page.dart';
 import 'package:yumzi/presentation/screens/auth/forgot_password.dart';
 import 'package:yumzi/presentation/screens/auth/login_page.dart';
 import 'package:yumzi/presentation/screens/auth/register_page.dart';
@@ -133,10 +133,13 @@ class AppRouter {
           builder: (context, state) => DeliveryLocationPage(),
         ),
         GoRoute(
-          name: AppRoutes.addAddress.name,
-          path: AppRoutes.addAddress.path,
-          builder: (context, state) =>
-              AddAddressPage(selectedPoint: state.extra as LatLng),
+          name: AppRoutes.saveAddress.name,
+          path: AppRoutes.saveAddress.path,
+          builder: (context, state) => SaveAddressPage(
+            initialAddress: state.extra is AddressEntity
+                ? state.extra as AddressEntity
+                : null,
+          ),
         ),
       ],
     ),
