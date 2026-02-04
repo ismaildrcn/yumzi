@@ -30,6 +30,7 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
 
   final MapController mapController = MapController();
   AddressType selectedAddressType = AddressType.home;
+  bool isDefaultAddress = false;
 
   bool get isEditMode => widget.initialAddress?.uniqueId != null;
 
@@ -51,6 +52,7 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
       _recipientNameController.text = address.recipientName;
       _phoneNumberController.text = address.phoneNumber;
       selectedAddressType = address.addressType;
+      isDefaultAddress = address.isDefault;
     }
   }
 
@@ -397,6 +399,8 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
                     }).toList(),
                     onChanged: (value) {
                       _provinceController.text = value ?? '';
+                      // Province değiştiğinde district'i temizle
+                      _districtController.clear();
                       addressProvider.fetchDistricts(value!);
                     },
                     value: _provinceController.text.isNotEmpty
@@ -460,7 +464,11 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
                     onChanged: (value) {
                       _districtController.text = value ?? '';
                     },
-                    value: _districtController.text.isNotEmpty
+                    value:
+                        _districtController.text.isNotEmpty &&
+                            addressProvider.districts.contains(
+                              _districtController.text,
+                            )
                         ? _districtController.text
                         : null,
                   ),
@@ -644,6 +652,37 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
             ),
           ],
         ),
+
+        const SizedBox(height: 24),
+
+        Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.onSecondary.withAlpha(32),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: CheckboxListTile(
+            checkColor: Colors.white54,
+            activeColor: Theme.of(context).colorScheme.primary,
+            title: Text(
+              'Set as Default Address',
+              style: TextStyle(
+                fontSize: 14,
+                color: Theme.of(context).textTheme.bodyMedium!.color,
+              ),
+            ),
+            value: isDefaultAddress,
+            onChanged: (value) {
+              setState(() {
+                isDefaultAddress = value ?? false;
+              });
+            },
+            controlAffinity: ListTileControlAffinity.leading,
+            contentPadding: EdgeInsets.symmetric(horizontal: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -664,7 +703,7 @@ class _SaveAddressPageState extends State<SaveAddressPage> {
       addressType: selectedAddressType,
       latitude: widget.initialAddress?.latitude ?? "",
       longitude: widget.initialAddress?.longitude ?? "",
-      isDefault: false,
+      isDefault: isDefaultAddress,
     );
     if (isEditMode) {
       newAddress.uniqueId = widget.initialAddress!.uniqueId;
