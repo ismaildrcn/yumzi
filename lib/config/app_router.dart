@@ -5,6 +5,7 @@ import 'package:yumzi/core/auth/auth_manager.dart';
 import 'package:yumzi/data/models/entity/address_entity.dart';
 import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/address_provider.dart';
+import 'package:yumzi/presentation/providers/restaurant_category_provider.dart';
 import 'package:yumzi/presentation/providers/user_provider.dart';
 import 'package:yumzi/presentation/screens/address/address_page.dart';
 import 'package:yumzi/presentation/screens/address/delivery_location_page.dart';
@@ -61,6 +62,7 @@ class AppRouter {
           providers: [
             ChangeNotifierProvider(create: (_) => UserProvider()),
             ChangeNotifierProvider(create: (_) => AddressProvider()),
+            ChangeNotifierProvider(create: (_) => RestaurantCategoryProvider()),
           ],
           child: child,
         );

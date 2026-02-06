@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:yumzi/data/models/entity/restaurant_category_entity.dart';
 import 'package:yumzi/data/services/auth_service.dart';
 import 'package:yumzi/enums/app_routes.dart';
+import 'package:yumzi/presentation/providers/restaurant_category_provider.dart';
 import 'package:yumzi/presentation/widgets/restaurant_meta_info.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,12 +16,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final AuthService authService = AuthService();
-  Map<String, dynamic> categoryData = {
-    "Burger": "assets/images/burger.png",
-    "Pizza": "assets/images/pizza-1.png",
-    "Sushi": "assets/images/sushi.png",
-    "Dessert": "assets/images/dessert.png",
-  };
+  List<RestaurantCategoryEntity> categories = [];
 
   Map<String, dynamic> restaurantData = {
     "X0smic Restaurant": "assets/images/restaurant-1.jpg",
@@ -29,6 +27,27 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void _loadData() async {
+    final provider = Provider.of<RestaurantCategoryProvider>(
+      context,
+      listen: false,
+    );
+    final fetchedCategories = await provider.getCategories();
+    if (fetchedCategories != null) {
+      setState(() {
+        categories = fetchedCategories;
+      });
+    }
   }
 
   @override
@@ -167,19 +186,20 @@ class _HomePageState extends State<HomePage> {
         Padding(
           padding: const EdgeInsets.only(left: 24.0),
           child: SizedBox(
-            height: 160,
+            height: 130,
             child: ListView.separated(
-              itemBuilder: (context, index) => categoryCard(
-                categoryData.keys.elementAt(index),
-                categoryData.values.elementAt(index),
-              ),
+              itemBuilder: (context, index) {
+                return categoryCard(
+                  categories[index].name!,
+                  categories[index].iconUrl!,
+                );
+              },
               separatorBuilder: (context, index) => SizedBox(width: 16),
-              itemCount: categoryData.length,
+              itemCount: categories.isNotEmpty ? 8 : 0,
               scrollDirection: Axis.horizontal,
             ),
           ),
         ),
-        SizedBox(height: 20),
       ],
     );
   }
@@ -188,8 +208,8 @@ class _HomePageState extends State<HomePage> {
     return Column(
       children: [
         Container(
-          width: 122,
-          height: 122,
+          width: 90,
+          height: 100,
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.secondary,
             borderRadius: BorderRadius.circular(15),
@@ -201,22 +221,28 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(imagePath),
-                  fit: BoxFit.contain,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 0, top: 0),
+                child: Container(
+                  constraints: BoxConstraints(maxWidth: 70, maxHeight: 70),
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(imagePath),
+                      fit: BoxFit.contain,
+                    ),
+                  ),
                 ),
               ),
-            ),
+              SizedBox(height: 4),
+              Text(
+                title,
+                style: TextStyle(fontSize: 13),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
-        ),
-        SizedBox(height: 8),
-        Text(
-          title,
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
       ],
     );

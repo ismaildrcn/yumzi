@@ -73,7 +73,7 @@ class _UserPageState extends State<UserPage> {
                                   iconSize: 28,
                                   icon: Icon(Icons.chevron_left_sharp),
                                   onPressed: () {
-                                    Navigator.pop(context);
+                                    context.push(AppRoutes.home.path);
                                   },
                                 ),
                               ),
