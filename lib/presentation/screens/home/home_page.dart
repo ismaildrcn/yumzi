@@ -5,6 +5,7 @@ import 'package:yumzi/data/models/entity/restaurant_category_entity.dart';
 import 'package:yumzi/data/services/auth_service.dart';
 import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/restaurant_category_provider.dart';
+import 'package:yumzi/presentation/widgets/restaurant_category_card.dart';
 import 'package:yumzi/presentation/widgets/restaurant_meta_info.dart';
 
 class HomePage extends StatefulWidget {
@@ -186,62 +187,15 @@ class _HomePageState extends State<HomePage> {
         Padding(
           padding: const EdgeInsets.only(left: 24.0),
           child: SizedBox(
-            height: 130,
+            height: 120,
             child: ListView.separated(
               itemBuilder: (context, index) {
-                return categoryCard(
-                  categories[index].name!,
-                  categories[index].iconUrl!,
-                );
+                return RestaurantCategoryCard(category: categories[index]);
               },
               separatorBuilder: (context, index) => SizedBox(width: 16),
               itemCount: categories.isNotEmpty ? 8 : 0,
               scrollDirection: Axis.horizontal,
             ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget categoryCard(String title, String imagePath) {
-    return Column(
-      children: [
-        Container(
-          width: 90,
-          height: 100,
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.secondary,
-            borderRadius: BorderRadius.circular(15),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(32),
-                blurRadius: 12,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 0, top: 0),
-                child: Container(
-                  constraints: BoxConstraints(maxWidth: 70, maxHeight: 70),
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(imagePath),
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 4),
-              Text(
-                title,
-                style: TextStyle(fontSize: 13),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
           ),
         ),
       ],
