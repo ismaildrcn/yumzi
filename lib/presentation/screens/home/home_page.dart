@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
       listen: false,
     );
     final fetchedCategories = await provider.getCategories();
-    if (fetchedCategories != null) {
+    if (fetchedCategories != null && mounted) {
       setState(() {
         categories = fetchedCategories;
       });
@@ -162,7 +162,10 @@ class _HomePageState extends State<HomePage> {
               ),
               Spacer(),
               TextButton(
-                onPressed: () {},
+                onPressed: () => context.push(
+                  AppRoutes.restaurantCategories.path,
+                  extra: categories,
+                ),
                 child: Row(
                   children: [
                     Text(
@@ -187,10 +190,14 @@ class _HomePageState extends State<HomePage> {
         Padding(
           padding: const EdgeInsets.only(left: 24.0),
           child: SizedBox(
-            height: 120,
+            height: 110,
             child: ListView.separated(
+              clipBehavior: Clip.none,
               itemBuilder: (context, index) {
-                return RestaurantCategoryCard(category: categories[index]);
+                return SizedBox(
+                  width: 90,
+                  child: RestaurantCategoryCard(category: categories[index]),
+                );
               },
               separatorBuilder: (context, index) => SizedBox(width: 16),
               itemCount: categories.isNotEmpty ? 8 : 0,

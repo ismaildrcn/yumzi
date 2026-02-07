@@ -12,6 +12,7 @@ enum AppRoutes {
   deliveryLocation("/delivery-location"),
   saveAddress("/save-address"),
   restaurant("/restaurant"),
+  restaurantCategories("/restaurant-categories"),
   menuItem("/menu-item"),
   cart("/cart");
 
