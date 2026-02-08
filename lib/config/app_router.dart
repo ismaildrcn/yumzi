@@ -106,7 +106,8 @@ class AppRouter {
         GoRoute(
           name: AppRoutes.restaurant.name,
           path: AppRoutes.restaurant.path,
-          builder: (context, state) => RestaurantPage(),
+          builder: (context, state) =>
+              RestaurantPage(restaurantId: state.extra as String),
         ),
         GoRoute(
           name: AppRoutes.menuItem.name,

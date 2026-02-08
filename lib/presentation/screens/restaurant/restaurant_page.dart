@@ -1,109 +1,149 @@
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:yumzi/data/models/entity/restaurant_entity.dart';
 import 'package:yumzi/enums/app_routes.dart';
+import 'package:yumzi/presentation/providers/restaurant_providers.dart';
 import 'package:yumzi/presentation/widgets/restaurant_meta_info.dart';
 
 class RestaurantPage extends StatefulWidget {
-  const RestaurantPage({super.key});
+  final String restaurantId;
+
+  const RestaurantPage({super.key, required this.restaurantId});
 
   @override
   State<RestaurantPage> createState() => _RestaurantPageState();
 }
 
 class _RestaurantPageState extends State<RestaurantPage> {
+  RestaurantEntity? restaurant;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void _loadData() async {
+    final provider = Provider.of<RestaurantProviders>(context, listen: false);
+    final restaurantDetails = await provider.fetchRestaurantDetails(
+      widget.restaurantId,
+    );
+
+    if (restaurantDetails != null && mounted) {
+      setState(() {
+        restaurant = restaurantDetails;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            height: 320,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/images/restaurant-1.jpg'),
-                fit: BoxFit.cover,
-              ),
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: SafeArea(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSecondary.withAlpha(150),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: IconButton(
-                        iconSize: 38,
-                        icon: Icon(Icons.chevron_left_sharp),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSecondary.withAlpha(150),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: IconButton(
-                        iconSize: 28,
-                        onPressed: () {},
-                        icon: Icon(Icons.favorite_border),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      body: restaurant == null
+          ? Center(child: CircularProgressIndicator())
+          : Column(
               children: [
-                SizedBox(height: 26),
-                RestaurantMetaInfo(
-                  rating: 4.7,
-                  deliveryFee: 2.99,
-                  deliveryTime: "30-40 min",
-                ),
-                SizedBox(height: 16),
-                Text(
-                  'Spicy restaurant',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  "Maecenas sed diam eget risus varius blandit sit amet non magna. Integer posuere erat a ante venenatis dapibus posuere velit aliquet.",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSurface.withAlpha(128),
+                Container(
+                  height: 320,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(restaurant!.coverImageUrl!),
+                      fit: BoxFit.cover,
+                    ),
+                    borderRadius: BorderRadius.vertical(
+                      bottom: Radius.circular(30),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: SafeArea(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSecondary.withAlpha(150),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: IconButton(
+                              iconSize: 38,
+                              icon: Icon(Icons.chevron_left_sharp),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSecondary.withAlpha(150),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: IconButton(
+                              iconSize: 28,
+                              onPressed: () {},
+                              icon: Icon(Icons.favorite_border),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-                SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 26),
+                      RestaurantMetaInfo(
+                        rating: restaurant?.rating ?? 0,
+                        deliveryFee: restaurant?.deliveryFee ?? 0,
+                        deliveryTime: restaurant?.deliveryTimeRange ?? "",
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        restaurant?.name ?? "N/A",
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        restaurant?.description ?? "N/A",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withAlpha(128),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: menuCategories(context),
+                  ),
+                ),
               ],
             ),
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: menuCategories(context),
-            ),
-          ),
-        ],
-      ),
     );
   }
 

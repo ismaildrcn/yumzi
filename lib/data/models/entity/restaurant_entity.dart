@@ -35,7 +35,7 @@ class RestaurantEntity {
   final String? website;
   final OpeningHours? openingHours;
   final String? deliveryTimeRange;
-  final int? minimumOrderAmount;
+  final double? minimumOrderAmount;
   final double? deliveryFee;
   final double? deliveryRadiusKm;
   final double? rating;

@@ -41,4 +41,29 @@ class RestaurantProviders extends ChangeNotifier {
       return null;
     }
   }
+
+  Future<RestaurantEntity?> fetchRestaurantDetails(String restaurantId) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final rootEntity = await _service.fetchRestaurantDetails(restaurantId);
+      _isLoading = false;
+      notifyListeners();
+
+      if (rootEntity.status == 200) {
+        return RestaurantEntity.fromJson(rootEntity.payload!);
+      } else {
+        _errorMessage = 'Failed to load restaurant details';
+        notifyListeners();
+        return null;
+      }
+    } catch (e) {
+      _isLoading = false;
+      _errorMessage = 'An error occurred while fetching restaurant details';
+      notifyListeners();
+      return null;
+    }
+  }
 }

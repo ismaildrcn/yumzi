@@ -274,7 +274,7 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: GestureDetector(
         onTap: () {
-          context.push(AppRoutes.restaurant.path);
+          context.push(AppRoutes.restaurant.path, extra: restaurant.uniqueId);
         },
         child: SizedBox(
           width: double.infinity,
