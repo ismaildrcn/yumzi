@@ -7,8 +7,8 @@ import 'package:yumzi/data/services/auth_service.dart';
 import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/restaurant_category_provider.dart';
 import 'package:yumzi/presentation/providers/restaurant_providers.dart';
+import 'package:yumzi/presentation/widgets/restaurant_card.dart';
 import 'package:yumzi/presentation/widgets/restaurant_category_card.dart';
-import 'package:yumzi/presentation/widgets/restaurant_meta_info.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -171,10 +171,7 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Row(
             children: [
-              Text(
-                "All Categories",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
+              Text("All Categories", style: TextStyle(fontSize: 20)),
               Spacer(),
               TextButton(
                 onPressed: () => context.push(
@@ -215,7 +212,7 @@ class _HomePageState extends State<HomePage> {
                 );
               },
               separatorBuilder: (context, index) => SizedBox(width: 16),
-              itemCount: categories.isNotEmpty ? 8 : 0,
+              itemCount: categories.isNotEmpty && categories.length > 8 ? 8 : 0,
               scrollDirection: Axis.horizontal,
             ),
           ),
@@ -231,13 +228,13 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Row(
             children: [
-              Text(
-                "Open Restaurants",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
+              Text("Open Restaurants", style: const TextStyle(fontSize: 20)),
               Spacer(),
               TextButton(
-                onPressed: () {},
+                onPressed: () => context.push(
+                  AppRoutes.restaurantList.path,
+                  extra: restaurants,
+                ),
                 child: Row(
                   children: [
                     Text(
@@ -261,48 +258,13 @@ class _HomePageState extends State<HomePage> {
         ListView.separated(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) => restaurantCard(restaurants[index]),
-          separatorBuilder: (context, index) => SizedBox(height: 30),
-          itemCount: restaurants.length,
+          itemBuilder: (context, index) =>
+              RestaurantCard(restaurant: restaurants[index]),
+          separatorBuilder: (context, index) => SizedBox(height: 24),
+          itemCount: restaurants.isNotEmpty && restaurants.length > 5 ? 5 : 0,
         ),
+        const SizedBox(height: 20),
       ],
-    );
-  }
-
-  Widget restaurantCard(RestaurantEntity restaurant) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: GestureDetector(
-        onTap: () {
-          context.push(AppRoutes.restaurant.path, extra: restaurant.uniqueId);
-        },
-        child: SizedBox(
-          width: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: 140,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                  image: DecorationImage(
-                    image: AssetImage(restaurant.coverImageUrl!),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              SizedBox(height: 8),
-              Text(restaurant.name!, style: TextStyle(fontSize: 20)),
-              SizedBox(height: 16),
-              RestaurantMetaInfo(
-                rating: restaurant.rating ?? 0,
-                deliveryFee: restaurant.deliveryFee ?? 0,
-                deliveryTime: restaurant.deliveryTimeRange ?? "N/A",
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

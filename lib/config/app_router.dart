@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:yumzi/core/auth/auth_manager.dart';
 import 'package:yumzi/data/models/entity/address_entity.dart';
 import 'package:yumzi/data/models/entity/restaurant_category_entity.dart';
+import 'package:yumzi/data/models/entity/restaurant_entity.dart';
 import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/address_provider.dart';
 import 'package:yumzi/presentation/providers/restaurant_category_provider.dart';
@@ -19,6 +20,7 @@ import 'package:yumzi/presentation/screens/auth/verification_page.dart';
 import 'package:yumzi/presentation/screens/home/home_page.dart';
 import 'package:yumzi/presentation/screens/restaurant/menu_item_page.dart';
 import 'package:yumzi/presentation/screens/restaurant/restaurant_categories_page.dart';
+import 'package:yumzi/presentation/screens/restaurant/restaurant_list_page.dart';
 import 'package:yumzi/presentation/screens/restaurant/restaurant_page.dart';
 import 'package:yumzi/presentation/screens/user/user_detail_page.dart';
 import 'package:yumzi/presentation/screens/user/user_edit_page.dart';
@@ -153,6 +155,13 @@ class AppRouter {
           path: AppRoutes.restaurantCategories.path,
           builder: (context, state) => RestaurantCategoriesPage(
             categories: state.extra as List<RestaurantCategoryEntity>,
+          ),
+        ),
+        GoRoute(
+          name: AppRoutes.restaurantList.name,
+          path: AppRoutes.restaurantList.path,
+          builder: (context, state) => RestaurantListPage(
+            restaurants: state.extra as List<RestaurantEntity>,
           ),
         ),
       ],
