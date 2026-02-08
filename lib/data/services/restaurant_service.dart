@@ -23,4 +23,13 @@ class RestaurantService {
       throw Exception('Restoran detayları alınamadı');
     }
   }
+
+  Future<RootEntity> fetchRestaurantsByCategory(String categoryId) async {
+    final response = await _dio.get('$urlPrefix/list/with-category/$categoryId');
+    if (response.data["status"] == 200) {
+      return RootEntity.fromJson(response.data);
+    } else {
+      throw Exception('Kategoriye ait restoranlar alınamadı');
+    }
+  }
 }
