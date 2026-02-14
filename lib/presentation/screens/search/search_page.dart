@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:yumzi/data/models/entity/search_entity.dart';
+import 'package:yumzi/data/models/entity/recent_search_entity.dart';
 import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/search_provider.dart';
 import 'package:yumzi/presentation/widgets/auto_complete_controller.dart';
@@ -18,9 +18,9 @@ class _SearchPageState extends State<SearchPage> {
   AutocompleteController searchController = AutocompleteController();
   Debouncer debouncer = Debouncer(milliseconds: 200);
   FocusNode searchFocusNode = FocusNode();
-  List<SearchEntity> _recentSearches = [];
+  List<RecentSearchEntity> _recentSearches = [];
 
-  List<SearchEntity> get recentSearches => _recentSearches;
+  List<RecentSearchEntity> get recentSearches => _recentSearches;
 
   @override
   void initState() {
@@ -153,7 +153,7 @@ class _SearchPageState extends State<SearchPage> {
       searchController.suggestion = "";
       return;
     }
-    SearchEntity? result = await provider.autoComplete(keyword);
+    RecentSearchEntity? result = await provider.autoComplete(keyword);
     debugPrint("Auto-complete result: ${result?.keyword}");
     searchController.suggestion = result?.keyword ?? "";
   }

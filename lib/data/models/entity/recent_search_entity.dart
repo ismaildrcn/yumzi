@@ -1,5 +1,5 @@
-class SearchEntity {
-  SearchEntity({
+class RecentSearchEntity {
+  RecentSearchEntity({
     required this.uniqueId,
     required this.keyword,
     required this.searchCount,
@@ -9,8 +9,8 @@ class SearchEntity {
   final String? keyword;
   final int? searchCount;
 
-  factory SearchEntity.fromJson(Map<String, dynamic> json) {
-    return SearchEntity(
+  factory RecentSearchEntity.fromJson(Map<String, dynamic> json) {
+    return RecentSearchEntity(
       uniqueId: json["uniqueId"],
       keyword: json["keyword"],
       searchCount: json["searchCount"],

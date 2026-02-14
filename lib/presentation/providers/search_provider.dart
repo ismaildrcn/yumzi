@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:yumzi/data/models/entity/search_entity.dart';
+import 'package:yumzi/data/models/entity/recent_search_entity.dart';
 import 'package:yumzi/data/services/search_service.dart';
 
 class SearchProvider extends ChangeNotifier {
   final SearchService _service = SearchService();
   bool _isLoading = false;
   String? _errorMessage;
-  SearchEntity? _completedKeyword;
-  List<SearchEntity> _recentSearches = [];
+  RecentSearchEntity? _completedKeyword;
+  List<RecentSearchEntity> _recentSearches = [];
 
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
-  SearchEntity? get completedKeyword => _completedKeyword;
-  List<SearchEntity> get recentSearches => _recentSearches;
+  RecentSearchEntity? get completedKeyword => _completedKeyword;
+  List<RecentSearchEntity> get recentSearches => _recentSearches;
 
-  Future<SearchEntity?> autoComplete(String keyword) async {
+  Future<RecentSearchEntity?> autoComplete(String keyword) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
@@ -25,7 +25,7 @@ class SearchProvider extends ChangeNotifier {
       notifyListeners();
 
       if (rootEntity.status == 200) {
-        _completedKeyword = SearchEntity.fromJson(rootEntity.payload!);
+        _completedKeyword = RecentSearchEntity.fromJson(rootEntity.payload!);
         notifyListeners();
         return _completedKeyword;
       } else {
@@ -41,7 +41,7 @@ class SearchProvider extends ChangeNotifier {
     }
   }
 
-  Future<List<SearchEntity>> fetchRecentSearches() async {
+  Future<List<RecentSearchEntity>> fetchRecentSearches() async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
@@ -53,7 +53,7 @@ class SearchProvider extends ChangeNotifier {
 
       if (rootEntity.status == 200) {
         _recentSearches = (rootEntity.payload as List)
-            .map((item) => SearchEntity.fromJson(item))
+            .map((item) => RecentSearchEntity.fromJson(item))
             .toList();
         notifyListeners();
         return _recentSearches;
