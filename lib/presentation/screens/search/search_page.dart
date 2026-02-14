@@ -112,11 +112,7 @@ class _SearchPageState extends State<SearchPage> {
                         hintText: 'Search dishes, restaurants',
                         // prefixIcon: Icon(Icons.search),
                         suffixIcon: GestureDetector(
-                          onTap: () {
-                            debugPrint(
-                              "Search submitted: ${searchController.text}",
-                            );
-                          },
+                          onTap: () => onPerformSearch(searchProvider),
                           child: Icon(
                             Icons.search,
                             color: searchController.text.length > 2
@@ -146,6 +142,15 @@ class _SearchPageState extends State<SearchPage> {
         ),
       ),
     );
+  }
+
+  void onPerformSearch(SearchProvider provider) async {
+    if (searchController.text.length < 3) return;
+
+    final result = await provider.performSearch(searchController.text);
+    if (result != null) {
+      debugPrint("Search performed successfully: ${result.keyword}");
+    }
   }
 
   void onSearchChanged(String keyword, SearchProvider provider) async {

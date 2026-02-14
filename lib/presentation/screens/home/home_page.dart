@@ -22,12 +22,6 @@ class _HomePageState extends State<HomePage> {
   List<RestaurantCategoryEntity> categories = [];
   List<RestaurantEntity> restaurants = [];
 
-  Map<String, dynamic> restaurantData = {
-    "X0smic Restaurant": "assets/images/restaurant-1.jpg",
-    "Yumzi Diner": "assets/images/restaurant-2.jpg",
-    "Foodie's Paradise": "assets/images/restaurant-3.jpg",
-  };
-
   @override
   void initState() {
     super.initState();

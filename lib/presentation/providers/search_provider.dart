@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yumzi/data/models/entity/recent_search_entity.dart';
+import 'package:yumzi/data/models/entity/search_entity.dart';
 import 'package:yumzi/data/services/search_service.dart';
 
 class SearchProvider extends ChangeNotifier {
@@ -67,6 +68,32 @@ class SearchProvider extends ChangeNotifier {
       _errorMessage = 'An error occurred while fetching recent searches';
       notifyListeners();
       return _recentSearches;
+    }
+  }
+
+  Future<SearchEntity?> performSearch(String keyword) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final rootEntity = await _service.search(keyword);
+      _isLoading = false;
+      notifyListeners();
+
+      if (rootEntity.status == 200) {
+        notifyListeners();
+        return SearchEntity.fromJson(rootEntity.payload!);
+      } else {
+        _errorMessage = 'Failed to perform search';
+        notifyListeners();
+        return null;
+      }
+    } catch (e) {
+      _isLoading = false;
+      _errorMessage = 'An error occurred while performing search';
+      notifyListeners();
+      return null;
     }
   }
 }
