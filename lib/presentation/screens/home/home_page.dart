@@ -94,6 +94,7 @@ class _HomePageState extends State<HomePage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: TextFormField(
+                  onTap: () => context.push(AppRoutes.search.path),
                   decoration: InputDecoration(
                     hintText: 'Search dishes, restaurants',
                     prefixIcon: Icon(Icons.search),

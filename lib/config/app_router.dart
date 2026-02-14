@@ -9,6 +9,7 @@ import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/address_provider.dart';
 import 'package:yumzi/presentation/providers/restaurant_category_provider.dart';
 import 'package:yumzi/presentation/providers/restaurant_providers.dart';
+import 'package:yumzi/presentation/providers/search_provider.dart';
 import 'package:yumzi/presentation/providers/user_provider.dart';
 import 'package:yumzi/presentation/screens/address/address_page.dart';
 import 'package:yumzi/presentation/screens/address/delivery_location_page.dart';
@@ -22,6 +23,7 @@ import 'package:yumzi/presentation/screens/restaurant/menu_item_page.dart';
 import 'package:yumzi/presentation/screens/restaurant/restaurant_categories_page.dart';
 import 'package:yumzi/presentation/screens/restaurant/restaurant_list_page.dart';
 import 'package:yumzi/presentation/screens/restaurant/restaurant_page.dart';
+import 'package:yumzi/presentation/screens/search/search_page.dart';
 import 'package:yumzi/presentation/screens/user/user_detail_page.dart';
 import 'package:yumzi/presentation/screens/user/user_edit_page.dart';
 import 'package:yumzi/presentation/screens/user/user_page.dart';
@@ -69,6 +71,7 @@ class AppRouter {
             ChangeNotifierProvider(create: (_) => AddressProvider()),
             ChangeNotifierProvider(create: (_) => RestaurantCategoryProvider()),
             ChangeNotifierProvider(create: (_) => RestaurantProviders()),
+            ChangeNotifierProvider(create: (_) => SearchProvider()),
           ],
           child: child,
         );
@@ -163,6 +166,11 @@ class AppRouter {
           builder: (context, state) => RestaurantListPage(
             restaurants: state.extra as List<RestaurantEntity>,
           ),
+        ),
+        GoRoute(
+          name: AppRoutes.search.name,
+          path: AppRoutes.search.path,
+          builder: (context, state) => SearchPage(),
         ),
       ],
     ),

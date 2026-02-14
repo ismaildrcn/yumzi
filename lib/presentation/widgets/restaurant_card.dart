@@ -42,6 +42,32 @@ class RestaurantCard extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                 ),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: GestureDetector(
+                      onTap: () {
+                        // Handle favorite action
+                      },
+                      child: Container(
+                        width: 38,
+                        height: 38,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSecondary.withAlpha(150),
+                          borderRadius: BorderRadius.circular(19),
+                        ),
+                        child: Icon(Icons.favorite_border, color: Colors.red),
+                      ),
+                    ),
+                  ),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(

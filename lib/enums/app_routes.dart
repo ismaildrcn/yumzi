@@ -15,7 +15,8 @@ enum AppRoutes {
   restaurantList("/restaurant-list"),
   restaurantCategories("/restaurant-categories"),
   menuItem("/menu-item"),
-  cart("/cart");
+  cart("/cart"),
+  search("/search");
 
   final String path;
   const AppRoutes(this.path);
