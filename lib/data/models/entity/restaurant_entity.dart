@@ -1,3 +1,5 @@
+import 'package:yumzi/data/models/enums/menu_category_type.dart';
+
 class RestaurantEntity {
   RestaurantEntity({
     required this.uniqueId,
@@ -24,6 +26,7 @@ class RestaurantEntity {
     required this.acceptingOrders,
     required this.active,
     required this.featured,
+    required this.menuCategories,
   });
 
   final String? uniqueId;
@@ -50,6 +53,7 @@ class RestaurantEntity {
   final bool? acceptingOrders;
   final bool? active;
   final bool? featured;
+  final List<MenuCategory>? menuCategories;
 
   factory RestaurantEntity.fromJson(Map<String, dynamic> json) {
     return RestaurantEntity(
@@ -83,6 +87,11 @@ class RestaurantEntity {
       acceptingOrders: json["acceptingOrders"],
       active: json["active"],
       featured: json["featured"],
+      menuCategories: json["menuCategories"] == null
+          ? null
+          : List<MenuCategory>.from(
+              json["menuCategories"].map((x) => MenuCategory.fromJson(x)),
+            ),
     );
   }
 
@@ -111,6 +120,7 @@ class RestaurantEntity {
     "acceptingOrders": acceptingOrders,
     "active": active,
     "featured": featured,
+    "menuCategories": menuCategories?.map((x) => x.toJson()).toList(),
   };
 }
 
@@ -235,5 +245,59 @@ class Day {
     "open": open,
     "close": close,
     "closed": closed,
+  };
+}
+
+class MenuCategory {
+  MenuCategory({
+    required this.uniqueId,
+    required this.name,
+    required this.description,
+    required this.slug,
+    required this.imageUrl,
+    required this.sortOrder,
+    required this.isActive,
+    required this.isFeatured,
+    required this.categoryType,
+  });
+
+  final String? uniqueId;
+  final String? name;
+  final String? description;
+  final String? slug;
+  final String? imageUrl;
+  final int? sortOrder;
+  final bool? isActive;
+  final bool? isFeatured;
+  final MenuCategoryType? categoryType;
+
+  factory MenuCategory.fromJson(Map<String, dynamic> json) {
+    return MenuCategory(
+      uniqueId: json["uniqueId"],
+      name: json["name"],
+      description: json["description"],
+      slug: json["slug"],
+      imageUrl: json["imageUrl"],
+      sortOrder: json["sortOrder"],
+      isActive: json["isActive"],
+      isFeatured: json["isFeatured"],
+      categoryType: json['categoryType'] != null
+          ? MenuCategoryType.values.firstWhere(
+              (e) => e.value == json['categoryType'],
+            )
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    "uniqueId": uniqueId,
+    "name": name,
+    "description": description,
+    "slug": slug,
+    "imageUrl": imageUrl,
+    "sortOrder": sortOrder,
+    "isActive": isActive,
+    "isFeatured": isFeatured,
+    "categoryType": categoryType?.value,
   };
 }

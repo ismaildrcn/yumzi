@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yumzi/data/models/entity/menu_item_entity.dart';
 import 'package:yumzi/data/models/entity/restaurant_entity.dart';
 import 'package:yumzi/data/services/restaurant_service.dart';
 
@@ -92,6 +93,34 @@ class RestaurantProviders extends ChangeNotifier {
       _isLoading = false;
       _errorMessage =
           'An error occurred while fetching restaurants for category';
+      notifyListeners();
+      return null;
+    }
+  }
+
+  // Menu Item Fetching Methods
+  Future<List<MenuItemEntity>?> fetchMenuItemsWithCategory(String restaurantId, String categoryId) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final rootEntity = await _service.fetchMenuItems(restaurantId, categoryId);
+      _isLoading = false;
+      notifyListeners();
+
+      if (rootEntity.status == 200) {
+        return (rootEntity.payload as List)
+            .map((json) => MenuItemEntity.fromJson(json))
+            .toList();
+      } else {
+        _errorMessage = 'Failed to load menu items';
+        notifyListeners();
+        return null;
+      }
+    } catch (e) {
+      _isLoading = false;
+      _errorMessage = 'An error occurred while fetching menu items';
       notifyListeners();
       return null;
     }

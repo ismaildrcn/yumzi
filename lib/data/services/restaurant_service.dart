@@ -25,11 +25,27 @@ class RestaurantService {
   }
 
   Future<RootEntity> fetchRestaurantsByCategory(String categoryId) async {
-    final response = await _dio.get('$urlPrefix/list/with-category/$categoryId');
+    final response = await _dio.get(
+      '$urlPrefix/list/with-category/$categoryId',
+    );
     if (response.data["status"] == 200) {
       return RootEntity.fromJson(response.data);
     } else {
       throw Exception('Kategoriye ait restoranlar alınamadı');
+    }
+  }
+
+  Future<RootEntity> fetchMenuItems(
+    String restaurantId,
+    String categoryId,
+  ) async {
+    final response = await _dio.get(
+      '$urlPrefix/$restaurantId/menu-categories/$categoryId/menu-items',
+    );
+    if (response.data["status"] == 200) {
+      return RootEntity.fromJson(response.data);
+    } else {
+      throw Exception('Menü öğeleri alınamadı');
     }
   }
 }
