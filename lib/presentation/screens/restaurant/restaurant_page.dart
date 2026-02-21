@@ -68,10 +68,13 @@ class _RestaurantPageState extends State<RestaurantPage>
       _tabController!.addListener(_onTabChanged);
 
       // İlk kategorinin menü itemlarını çek
-      final firstCategoryItems = await provider.fetchMenuItemsWithCategory(
-        widget.restaurantId,
-        restaurantDetails.menuCategories!.first.uniqueId!,
-      );
+      List<MenuItemEntity>? firstCategoryItems = [];
+      if (restaurantDetails.menuCategories!.isNotEmpty) {
+        firstCategoryItems = await provider.fetchMenuItemsWithCategory(
+          widget.restaurantId,
+          restaurantDetails.menuCategories!.first.uniqueId!,
+        );
+      }
 
       setState(() {
         restaurant = restaurantDetails;
@@ -241,38 +244,43 @@ class _RestaurantPageState extends State<RestaurantPage>
                     ),
                   ),
                   SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
-                      child: ButtonsTabBar(
-                        controller: _tabController,
-                        labelStyle: TextStyle(
-                          fontSize: 16,
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onPrimary.withAlpha(200),
-                        ),
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        unselectedDecoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.secondary,
-                          borderRadius: BorderRadius.circular(50),
-                          border: Border.all(
-                            color: Theme.of(context).colorScheme.onSurface,
-                            width: 1.5,
-                          ),
-                        ),
-                        tabs: [
-                          for (var category in restaurant!.menuCategories!)
-                            Tab(text: category.name),
-                        ],
-                      ),
-                    ),
+                    child: menuItems != null && menuItems!.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24),
+                            child: ButtonsTabBar(
+                              controller: _tabController,
+                              labelStyle: TextStyle(
+                                fontSize: 16,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onPrimary.withAlpha(200),
+                              ),
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary,
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              unselectedDecoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.secondary,
+                                borderRadius: BorderRadius.circular(50),
+                                border: Border.all(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurface,
+                                  width: 1.5,
+                                ),
+                              ),
+                              tabs: [
+                                for (var category
+                                    in restaurant!.menuCategories!)
+                                  Tab(text: category.name),
+                              ],
+                            ),
+                          )
+                        : SizedBox.shrink(),
                   ),
                   SliverToBoxAdapter(child: SizedBox(height: 16)),
                 ];
