@@ -1,3 +1,5 @@
+import 'package:yumzi/data/models/entity/restaurant_entity.dart';
+
 class MenuItemEntity {
   MenuItemEntity({
     required this.uniqueId,
@@ -20,6 +22,7 @@ class MenuItemEntity {
     required this.carbohydrateGrams,
     required this.fatGrams,
     required this.allergens,
+    required this.restaurant,
   });
 
   final String? uniqueId;
@@ -42,6 +45,7 @@ class MenuItemEntity {
   final double? carbohydrateGrams;
   final double? fatGrams;
   final Allergens? allergens;
+  final RestaurantEntity restaurant;
 
   factory MenuItemEntity.fromJson(Map<String, dynamic> json) {
     return MenuItemEntity(
@@ -67,6 +71,7 @@ class MenuItemEntity {
       allergens: json["allergens"] == null
           ? null
           : Allergens.fromJson(json["allergens"]),
+      restaurant: RestaurantEntity.fromJson(json["restaurant"]),
     );
   }
 
@@ -91,6 +96,7 @@ class MenuItemEntity {
     "carbohydrateGrams": carbohydrateGrams,
     "fatGrams": fatGrams,
     "allergens": allergens?.toJson(),
+    "restaurant": restaurant.toJson(),
   };
 }
 

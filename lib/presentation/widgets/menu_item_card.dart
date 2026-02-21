@@ -25,7 +25,7 @@ class MenuItemCard extends StatelessWidget {
       ),
       child: GestureDetector(
         onTap: () {
-          context.push(AppRoutes.menuItem.path);
+          context.push(AppRoutes.menuItem.path, extra: menuItem);
         },
         child: Padding(
           padding: const EdgeInsets.all(12),

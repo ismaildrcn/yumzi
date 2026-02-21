@@ -215,11 +215,7 @@ class _RestaurantPageState extends State<RestaurantPage>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(height: 26),
-                          RestaurantMetaInfo(
-                            rating: restaurant?.rating ?? 0,
-                            deliveryFee: restaurant?.deliveryFee ?? 0,
-                            deliveryTime: restaurant?.deliveryTimeRange ?? "",
-                          ),
+                          RestaurantMetaInfo(restaurant: restaurant!),
                           SizedBox(height: 16),
                           Text(
                             restaurant?.name ?? "N/A",

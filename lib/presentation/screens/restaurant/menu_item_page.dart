@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:yumzi/data/models/entity/menu_item_entity.dart';
 import 'package:yumzi/presentation/widgets/restaurant_meta_info.dart';
 
 class MenuItemPage extends StatefulWidget {
-  const MenuItemPage({super.key});
+  final MenuItemEntity menuItem;
+  const MenuItemPage({super.key, required this.menuItem});
 
   @override
   State<MenuItemPage> createState() => _MenuItemPageState();
 }
 
 class _MenuItemPageState extends State<MenuItemPage> {
+  int _quantity = 1;
+
+  void _changeQuantity(int delta) {
+    setState(() {
+      _quantity += delta;
+      if (_quantity < 1) _quantity = 1;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,14 +57,14 @@ class _MenuItemPageState extends State<MenuItemPage> {
                           Text("Details", style: TextStyle(fontSize: 17)),
                         ],
                       ),
-                      SizedBox(height: 40),
+                      SizedBox(height: 24),
                       Container(
                         width: double.infinity,
-                        height: 184,
+                        height: 200,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage('assets/images/restaurant-1.jpg'),
-                            fit: BoxFit.cover,
+                            image: AssetImage(widget.menuItem.imageUrl ?? ''),
+                            fit: BoxFit.contain,
                           ),
                           borderRadius: BorderRadius.circular(32),
                         ),
@@ -117,7 +128,7 @@ class _MenuItemPageState extends State<MenuItemPage> {
                             Icon(Icons.restaurant),
                             SizedBox(width: 12),
                             Text(
-                              "Italian Pizza",
+                              widget.menuItem.restaurant.name ?? "N/A",
                               style: TextStyle(fontSize: 14),
                             ),
                           ],
@@ -130,7 +141,7 @@ class _MenuItemPageState extends State<MenuItemPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Cheese Pizza",
+                            widget.menuItem.name ?? "N/A",
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -139,7 +150,7 @@ class _MenuItemPageState extends State<MenuItemPage> {
                           ),
                           SizedBox(height: 8),
                           Text(
-                            "Prosciutto e funghi is a pizza variety that is topped with tomato sauce.",
+                            widget.menuItem.description ?? "N/A",
                             style: TextStyle(
                               fontSize: 14,
                               color: Theme.of(
@@ -149,23 +160,12 @@ class _MenuItemPageState extends State<MenuItemPage> {
                           ),
                           SizedBox(height: 20),
                           RestaurantMetaInfo(
-                            rating: 4.5,
-                            deliveryFee: 2.99,
-                            deliveryTime: "30-40 min",
+                            restaurant: widget.menuItem.restaurant,
                           ),
                         ],
                       ),
 
                       SizedBox(height: 24),
-
-                      Row(
-                        children: [
-                          Text(
-                            "SIZE:",
-                            style: TextStyle(fontSize: 14, letterSpacing: 1.05),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 ),
@@ -196,7 +196,10 @@ class _MenuItemPageState extends State<MenuItemPage> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("\$ 32.99", style: TextStyle(fontSize: 28)),
+                          Text(
+                            widget.menuItem.price?.toString() ?? "N/A",
+                            style: TextStyle(fontSize: 28),
+                          ),
                           Spacer(),
                           Container(
                             decoration: BoxDecoration(
@@ -206,9 +209,7 @@ class _MenuItemPageState extends State<MenuItemPage> {
                             child: Row(
                               children: [
                                 IconButton(
-                                  onPressed: () {
-                                    // Decrease quantity action
-                                  },
+                                  onPressed: () => _changeQuantity(-1),
                                   iconSize: 20,
                                   icon: Icon(
                                     Icons.remove,
@@ -217,7 +218,7 @@ class _MenuItemPageState extends State<MenuItemPage> {
                                 ),
                                 SizedBox(width: 8),
                                 Text(
-                                  "1",
+                                  _quantity.toString(),
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -226,9 +227,7 @@ class _MenuItemPageState extends State<MenuItemPage> {
                                 ),
                                 SizedBox(width: 8),
                                 IconButton(
-                                  onPressed: () {
-                                    // Increase quantity action
-                                  },
+                                  onPressed: () => _changeQuantity(1),
                                   iconSize: 20,
                                   icon: Icon(Icons.add, color: Colors.white60),
                                 ),
@@ -239,9 +238,7 @@ class _MenuItemPageState extends State<MenuItemPage> {
                       ),
                       SizedBox(height: 24),
                       ElevatedButton(
-                        onPressed: () {
-                          // Add to cart action
-                        },
+                        onPressed: _addToCart,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Theme.of(
                             context,
@@ -276,5 +273,9 @@ class _MenuItemPageState extends State<MenuItemPage> {
         ),
       ),
     );
+  }
+
+  void _addToCart() {
+    // TODO: Implement add to cart functionality
   }
 }

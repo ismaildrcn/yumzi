@@ -82,11 +82,7 @@ class RestaurantCard extends StatelessWidget {
                       style: const TextStyle(fontSize: 20),
                     ),
                     const SizedBox(height: 8.0),
-                    RestaurantMetaInfo(
-                      rating: restaurant.rating ?? 0,
-                      deliveryFee: restaurant.deliveryFee ?? 0,
-                      deliveryTime: restaurant.deliveryTimeRange ?? "N/A",
-                    ),
+                    RestaurantMetaInfo(restaurant: restaurant),
                   ],
                 ),
               ),
