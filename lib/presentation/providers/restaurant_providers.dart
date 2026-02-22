@@ -99,13 +99,19 @@ class RestaurantProviders extends ChangeNotifier {
   }
 
   // Menu Item Fetching Methods
-  Future<List<MenuItemEntity>?> fetchMenuItemsWithCategory(String restaurantId, String categoryId) async {
+  Future<List<MenuItemEntity>?> fetchMenuItemsWithCategory(
+    String restaurantId,
+    String categoryId,
+  ) async {
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
     try {
-      final rootEntity = await _service.fetchMenuItems(restaurantId, categoryId);
+      final rootEntity = await _service.fetchMenuItems(
+        restaurantId,
+        categoryId,
+      );
       _isLoading = false;
       notifyListeners();
 
@@ -121,6 +127,31 @@ class RestaurantProviders extends ChangeNotifier {
     } catch (e) {
       _isLoading = false;
       _errorMessage = 'An error occurred while fetching menu items';
+      notifyListeners();
+      return null;
+    }
+  }
+
+  Future<MenuItemEntity?> fetchMenuItemDetails(String menuItemId) async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final rootEntity = await _service.fetchMenuItemDetails(menuItemId);
+      _isLoading = false;
+      notifyListeners();
+
+      if (rootEntity.status == 200) {
+        return MenuItemEntity.fromJson(rootEntity.payload!);
+      } else {
+        _errorMessage = 'Failed to load menu item details';
+        notifyListeners();
+        return null;
+      }
+    } catch (e) {
+      _isLoading = false;
+      _errorMessage = 'An error occurred while fetching menu item details';
       notifyListeners();
       return null;
     }

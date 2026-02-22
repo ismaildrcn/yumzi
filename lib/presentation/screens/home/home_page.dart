@@ -150,7 +150,7 @@ class _HomePageState extends State<HomePage> {
               borderRadius: BorderRadius.circular(15),
             ),
             child: IconButton(
-              onPressed: () => {},
+              onPressed: () => context.push(AppRoutes.cart.path),
               icon: Icon(Icons.shopping_bag_outlined),
             ),
           ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
 import 'package:yumzi/data/models/entity/menu_item_entity.dart';
+import 'package:yumzi/presentation/providers/cart_provider.dart';
 import 'package:yumzi/presentation/widgets/restaurant_meta_info.dart';
 
 class MenuItemPage extends StatefulWidget {
@@ -197,7 +199,9 @@ class _MenuItemPageState extends State<MenuItemPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.menuItem.price?.toString() ?? "N/A",
+                            widget.menuItem.price != null
+                                ? "${widget.menuItem.price} ${widget.menuItem.currency?.symbol ?? ''}"
+                                : "N/A",
                             style: TextStyle(fontSize: 28),
                           ),
                           Spacer(),
@@ -237,32 +241,36 @@ class _MenuItemPageState extends State<MenuItemPage> {
                         ],
                       ),
                       SizedBox(height: 24),
-                      ElevatedButton(
-                        onPressed: _addToCart,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(
-                            context,
-                          ).colorScheme.primary,
-                          foregroundColor: Colors.white,
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.shopping_bag_outlined),
-                            SizedBox(width: 8),
-                            Text(
-                              "Add to Cart",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                      Consumer<CartProvider>(
+                        builder: (context, cartProvider, child) {
+                          return ElevatedButton(
+                            onPressed: () => _addToCart(context, cartProvider),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.primary,
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
                               ),
                             ),
-                          ],
-                        ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.shopping_bag_outlined),
+                                SizedBox(width: 8),
+                                Text(
+                                  "Add to Cart",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -275,7 +283,20 @@ class _MenuItemPageState extends State<MenuItemPage> {
     );
   }
 
-  void _addToCart() {
-    // TODO: Implement add to cart functionality
+  void _addToCart(BuildContext context, CartProvider cartProvider) async {
+    final success = await cartProvider.addToCart(
+      menuItemId: widget.menuItem.uniqueId ?? '',
+      quantity: _quantity,
+    );
+    if (!context.mounted) return;
+    if (success) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Item added to cart')));
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to add item to cart')));
+    }
   }
 }

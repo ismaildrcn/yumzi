@@ -48,4 +48,13 @@ class RestaurantService {
       throw Exception('Menü öğeleri alınamadı');
     }
   }
+
+  Future<RootEntity> fetchMenuItemDetails(String menuItemId) async {
+    final response = await _dio.get('$urlPrefix/menu-items/$menuItemId');
+    if (response.data["status"] == 200) {
+      return RootEntity.fromJson(response.data);
+    } else {
+      throw Exception('Menü öğesi detayları alınamadı');
+    }
+  }
 }

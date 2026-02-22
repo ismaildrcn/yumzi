@@ -1,4 +1,5 @@
 import 'package:yumzi/data/models/entity/restaurant_entity.dart';
+import 'package:yumzi/data/models/enums/currency_type.dart';
 
 class MenuItemEntity {
   MenuItemEntity({
@@ -32,7 +33,7 @@ class MenuItemEntity {
   final double? price;
   final double? discountPrice;
   final double? discountPercentage;
-  final String? currency;
+  final CurrencyType? currency;
   final int? stockQuantity;
   final int? minimumOrderQuantity;
   final int? maximumOrderQuantity;
@@ -56,7 +57,9 @@ class MenuItemEntity {
       price: json["price"],
       discountPrice: json["discountPrice"],
       discountPercentage: json["discountPercentage"],
-      currency: json["currency"],
+      currency: json["currency"] == null
+          ? null
+          : CurrencyType.values.firstWhere((e) => e.value == json["currency"]),
       stockQuantity: json["stockQuantity"],
       minimumOrderQuantity: json["minimumOrderQuantity"],
       maximumOrderQuantity: json["maximumOrderQuantity"],
@@ -83,7 +86,7 @@ class MenuItemEntity {
     "price": price,
     "discountPrice": discountPrice,
     "discountPercentage": discountPercentage,
-    "currency": currency,
+    "currency": currency?.value,
     "stockQuantity": stockQuantity,
     "minimumOrderQuantity": minimumOrderQuantity,
     "maximumOrderQuantity": maximumOrderQuantity,

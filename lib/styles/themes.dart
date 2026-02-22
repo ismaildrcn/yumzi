@@ -10,7 +10,7 @@ class AppTheme {
     colorScheme: const ColorScheme.light(
       primary: Color(0xFFFF7622), // Daha modern, tok bir mavi (Royal Blue)
       surface: Color(0xFFEEEEEE), // Açık gri, ana arkaplan
-      onSurface: Color(0xFF222222), // Çok hafif gri, kartlar için
+      onSurface: Color(0xFF121223), // Çok hafif gri, kartlar için
       secondary: Color(
         0xFFF5F6F8,
       ), // Siyah yerine koyu lacivert (Dark theme bg)
