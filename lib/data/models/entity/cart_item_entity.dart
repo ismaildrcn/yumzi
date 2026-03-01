@@ -45,12 +45,12 @@ class CartItemEntity {
   };
 }
 
-class CreateCartItemRequest {
+class CartItemRequest {
   final String menuItemId;
   final int quantity;
   final String? specialInstructions;
 
-  CreateCartItemRequest({
+  CartItemRequest({
     required this.menuItemId,
     required this.quantity,
     this.specialInstructions,

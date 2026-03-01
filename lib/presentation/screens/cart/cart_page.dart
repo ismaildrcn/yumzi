@@ -5,8 +5,10 @@ import 'package:provider/provider.dart';
 import 'package:yumzi/data/models/entity/cart_entity.dart';
 import 'package:yumzi/data/models/entity/cart_item_entity.dart';
 import 'package:yumzi/enums/app_routes.dart';
+import 'package:yumzi/presentation/providers/address_provider.dart';
 import 'package:yumzi/presentation/providers/cart_provider.dart';
 import 'package:yumzi/presentation/providers/restaurant_providers.dart';
+import 'package:yumzi/presentation/widgets/message_box.dart';
 
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
@@ -28,11 +30,20 @@ class _CartPageState extends State<CartPage> {
 
   void _loadData() async {
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    final addressProvider = Provider.of<AddressProvider>(
+      context,
+      listen: false,
+    );
     final restaurantProvider = Provider.of<RestaurantProviders>(
       context,
       listen: false,
     );
     final fetchedCartItems = await cartProvider.fetchCart();
+    final defaultAddress = await addressProvider.fetchDefaultAddress();
+    if (defaultAddress != null && mounted) {
+      addressController.text =
+          "${defaultAddress.title} (${defaultAddress.neighborhood})";
+    }
 
     if (fetchedCartItems != null && mounted) {
       setState(() {
@@ -143,7 +154,7 @@ class _CartPageState extends State<CartPage> {
               children: [
                 Text("Total", style: TextStyle(fontSize: 18)),
                 Text(
-                  "99 TL",
+                  "${cart?.totalAmount ?? 0} TL",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ],
@@ -277,18 +288,43 @@ class _CartPageState extends State<CartPage> {
                           ),
                         ),
                       ),
-                      Container(
-                        width: 26,
-                        height: 26,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.error,
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Icon(
-                          Icons.close,
-                          size: 18,
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
+                      Consumer<CartProvider>(
+                        builder: (context, provider, child) {
+                          return GestureDetector(
+                            onTap: () => {
+                              provider.removeFromCart(cartItem.menuItemId).then(
+                                (success) {
+                                  if (!context.mounted) return;
+                                  if (success) {
+                                    _loadData();
+                                    MessageBox.info(
+                                      context,
+                                      'Item removed from cart',
+                                    );
+                                  } else {
+                                    MessageBox.error(
+                                      context,
+                                      'Failed to remove item from cart',
+                                    );
+                                  }
+                                },
+                              ),
+                            },
+                            child: Container(
+                              width: 26,
+                              height: 26,
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.error,
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              child: Icon(
+                                Icons.close,
+                                size: 18,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -308,20 +344,34 @@ class _CartPageState extends State<CartPage> {
                   Spacer(),
                   Row(
                     children: [
-                      Container(
-                        width: 24,
-                        height: 24,
-                        decoration: BoxDecoration(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSecondary.withAlpha(150),
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Icon(
-                          Icons.remove,
-                          size: 18,
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
+                      Consumer<CartProvider>(
+                        builder: (context, provider, child) {
+                          return GestureDetector(
+                            onTap: () {
+                              changeQuantity(
+                                context,
+                                provider,
+                                cartItem,
+                                false,
+                              );
+                            },
+                            child: Container(
+                              width: 24,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSecondary.withAlpha(150),
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              child: Icon(
+                                Icons.remove,
+                                size: 18,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                       const SizedBox(width: 20),
                       Text(
@@ -333,20 +383,29 @@ class _CartPageState extends State<CartPage> {
                         ),
                       ),
                       const SizedBox(width: 20),
-                      Container(
-                        width: 24,
-                        height: 24,
-                        decoration: BoxDecoration(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSecondary.withAlpha(150),
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Icon(
-                          Icons.add,
-                          size: 18,
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
+                      Consumer<CartProvider>(
+                        builder: (context, provider, child) {
+                          return GestureDetector(
+                            onTap: () {
+                              changeQuantity(context, provider, cartItem, true);
+                            },
+                            child: Container(
+                              width: 24,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSecondary.withAlpha(150),
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              child: Icon(
+                                Icons.add,
+                                size: 18,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -357,6 +416,30 @@ class _CartPageState extends State<CartPage> {
         ],
       ),
     );
+  }
+
+  void changeQuantity(
+    BuildContext context,
+    CartProvider provider,
+    CartItemEntity cartItem,
+    bool increment,
+  ) {
+    int newQuantity = increment ? cartItem.quantity + 1 : cartItem.quantity - 1;
+    if (newQuantity < 1) return; // Prevent quantity from going below 1
+
+    provider
+        .updateCartItemQuantity(
+          menuItemId: cartItem.menuItemId,
+          newQuantity: newQuantity,
+        )
+        .then((success) {
+          if (!context.mounted) return;
+          if (success) {
+            _loadData();
+          } else {
+            MessageBox.error(context, 'Failed to update cart');
+          }
+        });
   }
 
   Padding buildTopBar(BuildContext context) {

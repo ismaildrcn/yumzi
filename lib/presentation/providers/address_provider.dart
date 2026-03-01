@@ -80,7 +80,9 @@ class AddressProvider extends ChangeNotifier {
     try {
       final rootEntity = await _addressService.updateAddress(address);
       if (rootEntity.status == 200) {
-        int index = _addresses.indexWhere((a) => a.uniqueId == address.uniqueId);
+        int index = _addresses.indexWhere(
+          (a) => a.uniqueId == address.uniqueId,
+        );
         if (index != -1) {
           _addresses[index] = address;
         }
@@ -121,6 +123,28 @@ class AddressProvider extends ChangeNotifier {
     }
   }
 
+  Future<AddressEntity?> fetchDefaultAddress() async {
+    _isLoading = true;
+    _errorMessage = null;
+    notifyListeners();
+
+    try {
+      final rootEntity = await _addressService.fetchDefaultAddress();
+      if (rootEntity.status == 200) {
+        final addressJson = rootEntity.payload as Map<String, dynamic>;
+        return AddressEntity.fromJson(addressJson);
+      } else {
+        _errorMessage = 'Failed to load default address.';
+        return null;
+      }
+    } catch (e) {
+      _errorMessage = 'Failed to load default address.';
+      return null;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 
   Future<int> fetchProvinces() async {
     _isLoading = true;

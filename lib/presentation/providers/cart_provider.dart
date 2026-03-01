@@ -47,16 +47,52 @@ class CartProvider extends ChangeNotifier {
     required int quantity,
   }) async {
     try {
-      final request = CreateCartItemRequest(
+      final request = CartItemRequest(
         menuItemId: menuItemId,
         quantity: quantity,
       );
       final rootEntity = await service.addToCart(request);
       if (rootEntity.status == 200) {
-        await fetchCart();
         return true;
       } else {
         _errorMessage = 'Failed to add item to cart.';
+        return false;
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
+      return false;
+    }
+  }
+
+  Future<bool> removeFromCart(String menuItemId) async {
+    try {
+      final rootEntity = await service.removeCartItem(menuItemId);
+      if (rootEntity.status == 200) {
+        return true;
+      } else {
+        _errorMessage = 'Failed to remove item from cart.';
+        return false;
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
+      return false;
+    }
+  }
+
+  Future<bool> updateCartItemQuantity({
+    required String menuItemId,
+    required int newQuantity,
+  }) async {
+    try {
+      final request = CartItemRequest(
+        menuItemId: menuItemId,
+        quantity: newQuantity,
+      );
+      final rootEntity = await service.updateCartItemQuantity(request);
+      if (rootEntity.status == 200) {
+        return true;
+      } else {
+        _errorMessage = 'Failed to update cart item quantity.';
         return false;
       }
     } catch (e) {

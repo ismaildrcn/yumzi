@@ -49,6 +49,15 @@ class AddressService {
     }
   }
 
+  Future<RootEntity> fetchDefaultAddress() async {
+    final response = await _dio.get('$urlPrefix/address/default');
+    if (response.data["status"] == 200) {
+      return RootEntity.fromJson(response.data);
+    } else {
+      throw Exception('Varsayılan adres alınamadı');
+    }
+  }
+
   Future<RootEntity> fetchProvinces() async {
     final response = await _dio.get('$urlPrefix/addresses/provinces');
     if (response.data["status"] == 200) {

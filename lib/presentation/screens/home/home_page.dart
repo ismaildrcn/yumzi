@@ -5,6 +5,7 @@ import 'package:yumzi/data/models/entity/restaurant_category_entity.dart';
 import 'package:yumzi/data/models/entity/restaurant_entity.dart';
 import 'package:yumzi/data/services/auth_service.dart';
 import 'package:yumzi/enums/app_routes.dart';
+import 'package:yumzi/presentation/providers/cart_provider.dart';
 import 'package:yumzi/presentation/providers/restaurant_category_provider.dart';
 import 'package:yumzi/presentation/providers/restaurant_providers.dart';
 import 'package:yumzi/presentation/widgets/restaurant_card.dart';
@@ -21,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   final AuthService authService = AuthService();
   List<RestaurantCategoryEntity> categories = [];
   List<RestaurantEntity> restaurants = [];
+  int cartItemCount = 0;
 
   @override
   void initState() {
@@ -44,6 +46,14 @@ class _HomePageState extends State<HomePage> {
       context,
       listen: false,
     );
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    final cart = await cartProvider.fetchCart();
+    if (cart != null && mounted) {
+      cartItemCount = cart.cartItems.fold(
+        0,
+        (sum, item) => sum + item.quantity,
+      );
+    }
 
     final fetchedCategories = await restCategoryProvider.getCategories();
     if (fetchedCategories != null && mounted) {
@@ -151,7 +161,15 @@ class _HomePageState extends State<HomePage> {
             ),
             child: IconButton(
               onPressed: () => context.push(AppRoutes.cart.path),
-              icon: Icon(Icons.shopping_bag_outlined),
+              icon: cartItemCount > 0
+                  ? Badge.count(
+                      count: cartItemCount,
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.primary.withAlpha(200),
+                      child: Icon(Icons.shopping_bag_outlined),
+                    )
+                  : Icon(Icons.shopping_bag_outlined),
             ),
           ),
         ],
