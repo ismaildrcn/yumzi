@@ -40,6 +40,7 @@ class UserEntity {
 
   Map<String, dynamic> toJson() {
     return {
+      'uniqueId': uniqueId,
       'email': email,
       'phoneNumber': phoneNumber,
       'fullName': fullName,

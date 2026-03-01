@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
+import 'package:yumzi/data/models/entity/address_entity.dart';
 import 'package:yumzi/data/models/entity/cart_entity.dart';
 import 'package:yumzi/data/models/entity/cart_item_entity.dart';
 import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/address_provider.dart';
 import 'package:yumzi/presentation/providers/cart_provider.dart';
 import 'package:yumzi/presentation/providers/restaurant_providers.dart';
+import 'package:yumzi/presentation/widgets/address_selection_bottom_sheet.dart';
 import 'package:yumzi/presentation/widgets/message_box.dart';
 
 class CartPage extends StatefulWidget {
@@ -19,7 +21,7 @@ class CartPage extends StatefulWidget {
 
 class _CartPageState extends State<CartPage> {
   TextEditingController addressController = TextEditingController();
-
+  AddressEntity? defaultAddress;
   CartEntity? cart;
 
   @override
@@ -41,8 +43,11 @@ class _CartPageState extends State<CartPage> {
     final fetchedCartItems = await cartProvider.fetchCart();
     final defaultAddress = await addressProvider.fetchDefaultAddress();
     if (defaultAddress != null && mounted) {
-      addressController.text =
-          "${defaultAddress.title} (${defaultAddress.neighborhood})";
+      setState(() {
+        this.defaultAddress = defaultAddress;
+        addressController.text =
+            "${defaultAddress.title} (${defaultAddress.neighborhood})";
+      });
     }
 
     if (fetchedCartItems != null && mounted) {
@@ -120,6 +125,7 @@ class _CartPageState extends State<CartPage> {
             ),
             const SizedBox(height: 8),
             TextField(
+              onTap: () => _showAddressSelectionBottomSheet(context),
               controller: addressController,
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.symmetric(
@@ -146,7 +152,7 @@ class _CartPageState extends State<CartPage> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              enabled: false,
+              readOnly: true,
             ),
             const SizedBox(height: 16),
             Row(
@@ -174,6 +180,18 @@ class _CartPageState extends State<CartPage> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showAddressSelectionBottomSheet(BuildContext context) {
+    AddressSelectionBottomSheet.show(
+      context,
+      currentAddressTitle: defaultAddress != null ? defaultAddress!.title : "",
+      onAddressSelected: (selectedTitle) {
+        setState(() {
+          addressController.text = selectedTitle;
+        });
+      },
     );
   }
 
@@ -453,7 +471,7 @@ class _CartPageState extends State<CartPage> {
               borderRadius: BorderRadius.circular(15),
             ),
             child: IconButton(
-              onPressed: () => {Navigator.pop(context)},
+              onPressed: () => context.push(AppRoutes.home.path),
               iconSize: 28,
               icon: Icon(
                 Icons.keyboard_arrow_left,

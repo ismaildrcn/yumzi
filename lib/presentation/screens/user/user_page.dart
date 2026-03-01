@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:yumzi/core/storage/user_storage.dart';
 import 'package:yumzi/data/models/entity/user_entity.dart';
 import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/auth_provider.dart';
@@ -265,6 +266,7 @@ class _UserPageState extends State<UserPage> {
 
   void logoutClicked(AuthProvider authProvider) async {
     await authProvider.logout();
+    await UserStorage.deleteUser();
     if (mounted) {
       context.go(AppRoutes.login.path);
     }

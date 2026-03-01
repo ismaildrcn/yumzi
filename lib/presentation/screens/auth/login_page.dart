@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:yumzi/core/storage/user_storage.dart';
+import 'package:yumzi/data/models/entity/user_entity.dart';
 import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/auth_provider.dart';
+import 'package:yumzi/presentation/providers/user_provider.dart';
 import 'package:yumzi/presentation/screens/auth/auth_skeleton.dart';
 import 'package:yumzi/presentation/widgets/message_box.dart';
 
@@ -304,6 +307,13 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     if (loginSuccess) {
       MessageBox.success(context, 'Login successful!');
       context.go(AppRoutes.home.path);
+
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      UserEntity? fetchedUser = await userProvider.fetchUser();
+
+      if (fetchedUser != null) {
+        UserStorage.saveUser(fetchedUser);
+      }
     } else {
       MessageBox.error(
         context,
