@@ -183,7 +183,7 @@ class _MenuItemPageState extends State<MenuItemPage> {
                             Icon(Icons.restaurant),
                             SizedBox(width: 12),
                             Text(
-                              widget.menuItem.restaurant.name ?? "N/A",
+                              widget.menuItem.restaurant?.name ?? "N/A",
                               style: TextStyle(fontSize: 14),
                             ),
                           ],
@@ -214,9 +214,10 @@ class _MenuItemPageState extends State<MenuItemPage> {
                             ),
                           ),
                           SizedBox(height: 20),
-                          RestaurantMetaInfo(
-                            restaurant: widget.menuItem.restaurant,
-                          ),
+                          if (widget.menuItem.restaurant != null)
+                            RestaurantMetaInfo(
+                              restaurant: widget.menuItem.restaurant!,
+                            ),
                         ],
                       ),
 

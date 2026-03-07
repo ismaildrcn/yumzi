@@ -8,6 +8,7 @@ enum AppRoutes {
   user("/user"),
   userDetail("/user-detail"),
   userEdit("/user-edit"),
+  userFavorites("/user-favorites"),
   address("/address"),
   deliveryLocation("/delivery-location"),
   saveAddress("/save-address"),

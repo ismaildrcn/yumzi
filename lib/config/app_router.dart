@@ -9,6 +9,7 @@ import 'package:yumzi/data/models/entity/restaurant_entity.dart';
 import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/address_provider.dart';
 import 'package:yumzi/presentation/providers/cart_provider.dart';
+import 'package:yumzi/presentation/providers/favorites_provider.dart';
 import 'package:yumzi/presentation/providers/restaurant_category_provider.dart';
 import 'package:yumzi/presentation/providers/restaurant_providers.dart';
 import 'package:yumzi/presentation/providers/search_provider.dart';
@@ -27,6 +28,7 @@ import 'package:yumzi/presentation/screens/restaurant/restaurant_categories_page
 import 'package:yumzi/presentation/screens/restaurant/restaurant_list_page.dart';
 import 'package:yumzi/presentation/screens/restaurant/restaurant_page.dart';
 import 'package:yumzi/presentation/screens/search/search_page.dart';
+import 'package:yumzi/presentation/screens/user/favorites_page.dart';
 import 'package:yumzi/presentation/screens/user/user_detail_page.dart';
 import 'package:yumzi/presentation/screens/user/user_edit_page.dart';
 import 'package:yumzi/presentation/screens/user/user_page.dart';
@@ -76,6 +78,7 @@ class AppRouter {
             ChangeNotifierProvider(create: (_) => RestaurantProviders()),
             ChangeNotifierProvider(create: (_) => SearchProvider()),
             ChangeNotifierProvider(create: (_) => CartProvider()),
+            ChangeNotifierProvider(create: (_) => FavoritesProvider()),
           ],
           child: child,
         );
@@ -181,6 +184,11 @@ class AppRouter {
           name: AppRoutes.cart.name,
           path: AppRoutes.cart.path,
           builder: (context, state) => CartPage(),
+        ),
+        GoRoute(
+          name: AppRoutes.userFavorites.name,
+          path: AppRoutes.userFavorites.path,
+          builder: (context, state) => FavoritesPage(),
         ),
       ],
     ),

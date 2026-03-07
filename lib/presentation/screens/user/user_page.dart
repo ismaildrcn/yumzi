@@ -171,7 +171,8 @@ class _UserPageState extends State<UserPage> {
                                 color: Colors.pink,
                               ),
                               title: "Favorites",
-                              onTap: () {},
+                              onTap: () =>
+                                  context.push(AppRoutes.userFavorites.path),
                             ),
                             UserMenuItem(
                               icon: Icon(
