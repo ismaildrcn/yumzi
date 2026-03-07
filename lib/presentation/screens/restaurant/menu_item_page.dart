@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:yumzi/data/models/entity/menu_item_entity.dart';
+import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/cart_provider.dart';
+import 'package:yumzi/presentation/widgets/message_box.dart';
 import 'package:yumzi/presentation/widgets/restaurant_meta_info.dart';
 
 class MenuItemPage extends StatefulWidget {
@@ -15,11 +18,39 @@ class MenuItemPage extends StatefulWidget {
 
 class _MenuItemPageState extends State<MenuItemPage> {
   int _quantity = 1;
+  int cartItemCount = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loadData();
+  }
+
+  void _loadData() async {
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    final cart = await cartProvider.fetchCart();
+    if (cart != null && mounted) {
+      cartItemCount = cart.cartItems.fold(
+        0,
+        (sum, item) => sum + item.quantity,
+      );
+    }
+    _updateCartItemCount(cartProvider, 0);
+  }
 
   void _changeQuantity(int delta) {
     setState(() {
       _quantity += delta;
       if (_quantity < 1) _quantity = 1;
+    });
+  }
+
+  void _updateCartItemCount(CartProvider cartProvider, int quantity) {
+    final cart = cartProvider.cartItems;
+    setState(() {
+      cartItemCount =
+          cart.fold(0, (sum, item) => sum + item.quantity) + quantity;
     });
   }
 
@@ -57,6 +88,28 @@ class _MenuItemPageState extends State<MenuItemPage> {
                           ),
                           SizedBox(width: 16),
                           Text("Details", style: TextStyle(fontSize: 17)),
+                          Spacer(),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSecondary.withAlpha(150),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: IconButton(
+                              onPressed: () =>
+                                  context.push(AppRoutes.cart.path),
+                              icon: cartItemCount > 0
+                                  ? Badge.count(
+                                      count: cartItemCount,
+                                      backgroundColor: Theme.of(
+                                        context,
+                                      ).colorScheme.primary.withAlpha(200),
+                                      child: Icon(Icons.shopping_bag_outlined),
+                                    )
+                                  : Icon(Icons.shopping_bag_outlined),
+                            ),
+                          ),
                         ],
                       ),
                       SizedBox(height: 24),
@@ -290,13 +343,9 @@ class _MenuItemPageState extends State<MenuItemPage> {
     );
     if (!context.mounted) return;
     if (success) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Item added to cart')));
+      _updateCartItemCount(cartProvider, _quantity);
     } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Failed to add item to cart')));
+      MessageBox.error(context, 'Failed to add item to cart');
     }
   }
 }
