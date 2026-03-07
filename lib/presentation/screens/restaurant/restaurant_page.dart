@@ -1,8 +1,11 @@
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:yumzi/data/models/entity/menu_item_entity.dart';
 import 'package:yumzi/data/models/entity/restaurant_entity.dart';
+import 'package:yumzi/enums/app_routes.dart';
+import 'package:yumzi/presentation/providers/favorites_provider.dart';
 import 'package:yumzi/presentation/providers/restaurant_providers.dart';
 import 'package:yumzi/presentation/widgets/menu_item_card.dart';
 import 'package:yumzi/presentation/widgets/restaurant_meta_info.dart';
@@ -21,6 +24,7 @@ class _RestaurantPageState extends State<RestaurantPage>
   RestaurantEntity? restaurant;
   List<MenuItemEntity>? menuItems;
   TabController? _tabController;
+  bool isFavorite = false;
 
   @override
   void initState() {
@@ -79,6 +83,7 @@ class _RestaurantPageState extends State<RestaurantPage>
       setState(() {
         restaurant = restaurantDetails;
         menuItems = firstCategoryItems;
+        isFavorite = restaurantDetails.favorite == true;
       });
     }
   }
@@ -122,10 +127,10 @@ class _RestaurantPageState extends State<RestaurantPage>
                                       borderRadius: BorderRadius.circular(15),
                                     ),
                                     child: IconButton(
-                                      iconSize: 38,
+                                      iconSize: 28,
                                       icon: Icon(Icons.chevron_left_sharp),
                                       onPressed: () {
-                                        Navigator.pop(context);
+                                        context.push(AppRoutes.home.path);
                                       },
                                     ),
                                   ),
@@ -138,8 +143,19 @@ class _RestaurantPageState extends State<RestaurantPage>
                                     ),
                                     child: IconButton(
                                       iconSize: 28,
-                                      onPressed: () {},
-                                      icon: Icon(Icons.favorite_border),
+                                      onPressed: () => onTapFavorite(
+                                        context,
+                                        Provider.of<FavoritesProvider>(
+                                          context,
+                                          listen: false,
+                                        ),
+                                      ),
+                                      icon: Icon(
+                                        isFavorite
+                                            ? Icons.favorite
+                                            : Icons.favorite_border,
+                                        color: Colors.red,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -304,5 +320,20 @@ class _RestaurantPageState extends State<RestaurantPage>
               ),
             ),
     );
+  }
+
+  void onTapFavorite(
+    BuildContext context,
+    FavoritesProvider favoritesProvider,
+  ) {
+    favoritesProvider
+        .toggleFavoriteRestaurant(widget.restaurantId, !isFavorite)
+        .then((fav) {
+          setState(() {
+            if (fav != null) {
+              isFavorite = fav;
+            }
+          });
+        });
   }
 }

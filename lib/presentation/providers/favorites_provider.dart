@@ -42,4 +42,48 @@ class FavoritesProvider extends ChangeNotifier {
       return FavoritesEntity(favoriteItems: [], favoriteRestaurants: []);
     }
   }
+
+  Future<bool?> toggleFavoriteRestaurant(
+    String restaurantId,
+    bool isFavorite,
+  ) async {
+    try {
+      if (!isFavorite) {
+        await service.removeFavoriteRestaurant(restaurantId);
+        _favoriteRestaurants.removeWhere((r) => r.uniqueId == restaurantId);
+        notifyListeners();
+        return false;
+      } else {
+        await service.addFavoriteRestaurant(restaurantId);
+        notifyListeners();
+        return true;
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+      return null;
+    }
+  }
+
+  Future<bool?> toggleFavoriteMenuItem(
+    String menuItemId,
+    bool isFavorite,
+  ) async {
+    try {
+      if (!isFavorite) {
+        await service.removeFavoriteMenuItem(menuItemId);
+        _favoriteMenuItems.removeWhere((m) => m.uniqueId == menuItemId);
+        notifyListeners();
+        return false;
+      } else {
+        await service.addFavoriteMenuItem(menuItemId);
+        notifyListeners();
+        return true;
+      }
+    } catch (e) {
+      _errorMessage = e.toString();
+      notifyListeners();
+      return null;
+    }
+  }
 }

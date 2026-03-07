@@ -26,6 +26,7 @@ class RestaurantEntity {
     required this.acceptingOrders,
     required this.active,
     required this.featured,
+    required this.favorite,
     required this.menuCategories,
   });
 
@@ -53,6 +54,7 @@ class RestaurantEntity {
   final bool? acceptingOrders;
   final bool? active;
   final bool? featured;
+  final bool? favorite;
   final List<MenuCategory>? menuCategories;
 
   factory RestaurantEntity.fromJson(Map<String, dynamic> json) {
@@ -92,6 +94,7 @@ class RestaurantEntity {
           : List<MenuCategory>.from(
               json["menuCategories"].map((x) => MenuCategory.fromJson(x)),
             ),
+      favorite: json["favorite"],
     );
   }
 
@@ -120,6 +123,7 @@ class RestaurantEntity {
     "acceptingOrders": acceptingOrders,
     "active": active,
     "featured": featured,
+    "favorite": favorite,
     "menuCategories": menuCategories?.map((x) => x.toJson()).toList(),
   };
 }

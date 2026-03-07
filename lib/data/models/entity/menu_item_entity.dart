@@ -22,6 +22,7 @@ class MenuItemEntity {
     required this.proteinGrams,
     required this.carbohydrateGrams,
     required this.fatGrams,
+    required this.favorite,
     required this.allergens,
     required this.restaurant,
   });
@@ -45,6 +46,7 @@ class MenuItemEntity {
   final double? proteinGrams;
   final double? carbohydrateGrams;
   final double? fatGrams;
+  final bool? favorite;
   final Allergens? allergens;
   final RestaurantEntity? restaurant;
 
@@ -71,6 +73,7 @@ class MenuItemEntity {
       proteinGrams: json["proteinGrams"],
       carbohydrateGrams: json["carbohydrateGrams"],
       fatGrams: json["fatGrams"],
+      favorite: json["favorite"],
       allergens: json["allergens"] == null
           ? null
           : Allergens.fromJson(json["allergens"]),
@@ -100,6 +103,7 @@ class MenuItemEntity {
     "proteinGrams": proteinGrams,
     "carbohydrateGrams": carbohydrateGrams,
     "fatGrams": fatGrams,
+    "favorite": favorite,
     "allergens": allergens?.toJson(),
     "restaurant": restaurant?.toJson(),
   };

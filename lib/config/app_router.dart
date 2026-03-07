@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:yumzi/core/auth/auth_manager.dart';
 import 'package:yumzi/data/models/entity/address_entity.dart';
-import 'package:yumzi/data/models/entity/menu_item_entity.dart';
 import 'package:yumzi/data/models/entity/restaurant_category_entity.dart';
 import 'package:yumzi/data/models/entity/restaurant_entity.dart';
 import 'package:yumzi/enums/app_routes.dart';
@@ -125,7 +124,7 @@ class AppRouter {
           name: AppRoutes.menuItem.name,
           path: AppRoutes.menuItem.path,
           builder: (context, state) =>
-              MenuItemPage(menuItem: state.extra as MenuItemEntity),
+              MenuItemPage(menuItemId: state.extra as String),
         ),
         GoRoute(
           name: AppRoutes.user.name,

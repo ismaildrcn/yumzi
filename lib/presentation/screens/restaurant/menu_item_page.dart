@@ -5,12 +5,14 @@ import 'package:provider/provider.dart';
 import 'package:yumzi/data/models/entity/menu_item_entity.dart';
 import 'package:yumzi/enums/app_routes.dart';
 import 'package:yumzi/presentation/providers/cart_provider.dart';
+import 'package:yumzi/presentation/providers/favorites_provider.dart';
+import 'package:yumzi/presentation/providers/restaurant_providers.dart';
 import 'package:yumzi/presentation/widgets/message_box.dart';
 import 'package:yumzi/presentation/widgets/restaurant_meta_info.dart';
 
 class MenuItemPage extends StatefulWidget {
-  final MenuItemEntity menuItem;
-  const MenuItemPage({super.key, required this.menuItem});
+  final String menuItemId;
+  const MenuItemPage({super.key, required this.menuItemId});
 
   @override
   State<MenuItemPage> createState() => _MenuItemPageState();
@@ -19,16 +21,34 @@ class MenuItemPage extends StatefulWidget {
 class _MenuItemPageState extends State<MenuItemPage> {
   int _quantity = 1;
   int cartItemCount = 0;
+  bool isFavorite = false;
+  MenuItemEntity? menuItem;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    _loadData();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
   }
 
   void _loadData() async {
+    final restaurantProvider = Provider.of<RestaurantProviders>(
+      context,
+      listen: false,
+    );
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
+
+    final fetchedMenuItem = await restaurantProvider.fetchMenuItemDetails(
+      widget.menuItemId,
+    );
+    if (fetchedMenuItem != null && mounted) {
+      setState(() {
+        menuItem = fetchedMenuItem;
+        isFavorite = menuItem!.favorite == true;
+      });
+    }
+
     final cart = await cartProvider.fetchCart();
     if (cart != null && mounted) {
       cartItemCount = cart.cartItems.fold(
@@ -36,6 +56,7 @@ class _MenuItemPageState extends State<MenuItemPage> {
         (sum, item) => sum + item.quantity,
       );
     }
+
     _updateCartItemCount(cartProvider, 0);
   }
 
@@ -56,6 +77,10 @@ class _MenuItemPageState extends State<MenuItemPage> {
 
   @override
   Widget build(BuildContext context) {
+    final currentItem = menuItem;
+    if (currentItem == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
     return Scaffold(
       body: SafeArea(
         child: SizedBox.expand(
@@ -118,7 +143,7 @@ class _MenuItemPageState extends State<MenuItemPage> {
                         height: 200,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage(widget.menuItem.imageUrl ?? ''),
+                            image: AssetImage(currentItem.imageUrl ?? ''),
                             fit: BoxFit.contain,
                           ),
                           borderRadius: BorderRadius.circular(32),
@@ -126,11 +151,15 @@ class _MenuItemPageState extends State<MenuItemPage> {
                         child: Align(
                           alignment: Alignment.bottomRight,
                           child: Padding(
-                            padding: const EdgeInsets.all(20),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
                             child: GestureDetector(
-                              onTap: () {
-                                // Handle favorite action
-                              },
+                              onTap: () => onTapFavorite(
+                                context,
+                                Provider.of<FavoritesProvider>(
+                                  context,
+                                  listen: false,
+                                ),
+                              ),
                               child: Container(
                                 width: 38,
                                 height: 38,
@@ -145,7 +174,9 @@ class _MenuItemPageState extends State<MenuItemPage> {
                                   borderRadius: BorderRadius.circular(19),
                                 ),
                                 child: Icon(
-                                  Icons.favorite_border,
+                                  isFavorite
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
                                   color: Colors.red,
                                 ),
                               ),
@@ -183,7 +214,7 @@ class _MenuItemPageState extends State<MenuItemPage> {
                             Icon(Icons.restaurant),
                             SizedBox(width: 12),
                             Text(
-                              widget.menuItem.restaurant?.name ?? "N/A",
+                              currentItem.restaurant?.name ?? "N/A",
                               style: TextStyle(fontSize: 14),
                             ),
                           ],
@@ -196,7 +227,7 @@ class _MenuItemPageState extends State<MenuItemPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.menuItem.name ?? "N/A",
+                            currentItem.name ?? "N/A",
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -205,7 +236,7 @@ class _MenuItemPageState extends State<MenuItemPage> {
                           ),
                           SizedBox(height: 8),
                           Text(
-                            widget.menuItem.description ?? "N/A",
+                            currentItem.description ?? "N/A",
                             style: TextStyle(
                               fontSize: 14,
                               color: Theme.of(
@@ -214,9 +245,9 @@ class _MenuItemPageState extends State<MenuItemPage> {
                             ),
                           ),
                           SizedBox(height: 20),
-                          if (widget.menuItem.restaurant != null)
+                          if (currentItem.restaurant != null)
                             RestaurantMetaInfo(
-                              restaurant: widget.menuItem.restaurant!,
+                              restaurant: currentItem.restaurant!,
                             ),
                         ],
                       ),
@@ -253,8 +284,8 @@ class _MenuItemPageState extends State<MenuItemPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.menuItem.price != null
-                                ? "${widget.menuItem.price} ${widget.menuItem.currency?.symbol ?? ''}"
+                            currentItem.price != null
+                                ? "${currentItem.price} ${currentItem.currency?.symbol ?? ''}"
                                 : "N/A",
                             style: TextStyle(fontSize: 28),
                           ),
@@ -338,8 +369,11 @@ class _MenuItemPageState extends State<MenuItemPage> {
   }
 
   void _addToCart(BuildContext context, CartProvider cartProvider) async {
+    final currentItem = menuItem;
+    if (currentItem == null) return;
+
     final success = await cartProvider.addToCart(
-      menuItemId: widget.menuItem.uniqueId ?? '',
+      menuItemId: currentItem.uniqueId ?? '',
       quantity: _quantity,
     );
     if (!context.mounted) return;
@@ -348,5 +382,23 @@ class _MenuItemPageState extends State<MenuItemPage> {
     } else {
       MessageBox.error(context, 'Failed to add item to cart');
     }
+  }
+
+  void onTapFavorite(
+    BuildContext context,
+    FavoritesProvider favoritesProvider,
+  ) {
+    final currentItem = menuItem;
+    if (currentItem?.uniqueId == null) return;
+
+    favoritesProvider
+        .toggleFavoriteMenuItem(currentItem!.uniqueId!, !isFavorite)
+        .then((fav) {
+          setState(() {
+            if (fav != null) {
+              isFavorite = fav;
+            }
+          });
+        });
   }
 }

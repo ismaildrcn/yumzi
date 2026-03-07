@@ -1,12 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:yumzi/data/models/entity/restaurant_entity.dart';
 import 'package:yumzi/enums/app_routes.dart';
+import 'package:yumzi/presentation/providers/favorites_provider.dart';
 import 'package:yumzi/presentation/widgets/restaurant_meta_info.dart';
 
-class RestaurantCard extends StatelessWidget {
+class RestaurantCard extends StatefulWidget {
   final RestaurantEntity restaurant;
   const RestaurantCard({super.key, required this.restaurant});
+
+  @override
+  State<RestaurantCard> createState() => _RestaurantCardState();
+}
+
+class _RestaurantCardState extends State<RestaurantCard> {
+  late bool isFavorite;
+
+  @override
+  void initState() {
+    super.initState();
+    isFavorite = widget.restaurant.favorite ?? false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +29,10 @@ class RestaurantCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: GestureDetector(
         onTap: () {
-          context.push(AppRoutes.restaurant.path, extra: restaurant.uniqueId);
+          context.push(
+            AppRoutes.restaurant.path,
+            extra: widget.restaurant.uniqueId,
+          );
         },
         child: Container(
           clipBehavior: Clip.none,
@@ -38,7 +56,7 @@ class RestaurantCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(15)),
                   image: DecorationImage(
-                    image: AssetImage(restaurant.coverImageUrl!),
+                    image: AssetImage(widget.restaurant.coverImageUrl!),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -46,25 +64,33 @@ class RestaurantCard extends StatelessWidget {
                   padding: const EdgeInsets.all(12),
                   child: Align(
                     alignment: Alignment.topRight,
-                    child: GestureDetector(
-                      onTap: () {
-                        // Handle favorite action
+                    child: Consumer<FavoritesProvider>(
+                      builder: (context, favoritesProvider, child) {
+                        return GestureDetector(
+                          onTap: () =>
+                              onTapFavorite(context, favoritesProvider),
+                          child: Container(
+                            width: 38,
+                            height: 38,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSecondary.withAlpha(150),
+                              borderRadius: BorderRadius.circular(19),
+                            ),
+                            child: Icon(
+                              isFavorite == true
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: Colors.red,
+                            ),
+                          ),
+                        );
                       },
-                      child: Container(
-                        width: 38,
-                        height: 38,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSecondary.withAlpha(150),
-                          borderRadius: BorderRadius.circular(19),
-                        ),
-                        child: Icon(Icons.favorite_border, color: Colors.red),
-                      ),
                     ),
                   ),
                 ),
@@ -78,11 +104,11 @@ class RestaurantCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      restaurant.name!,
+                      widget.restaurant.name!,
                       style: const TextStyle(fontSize: 20),
                     ),
                     const SizedBox(height: 8.0),
-                    RestaurantMetaInfo(restaurant: restaurant),
+                    RestaurantMetaInfo(restaurant: widget.restaurant),
                   ],
                 ),
               ),
@@ -91,5 +117,17 @@ class RestaurantCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void onTapFavorite(BuildContext context, FavoritesProvider provider) async {
+    final fav = await provider.toggleFavoriteRestaurant(
+      widget.restaurant.uniqueId!,
+      !isFavorite,
+    );
+    setState(() {
+      if (fav != null) {
+        isFavorite = fav;
+      }
+    });
   }
 }

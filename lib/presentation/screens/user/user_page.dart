@@ -57,49 +57,7 @@ class _UserPageState extends State<UserPage> {
                 return SingleChildScrollView(
                   child: Column(
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSecondary.withAlpha(150),
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: IconButton(
-                                  iconSize: 28,
-                                  icon: Icon(Icons.chevron_left_sharp),
-                                  onPressed: () {
-                                    context.push(AppRoutes.home.path);
-                                  },
-                                ),
-                              ),
-                              SizedBox(width: 16),
-                              Text("Profile", style: TextStyle(fontSize: 17)),
-                            ],
-                          ),
-
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.onSecondary.withAlpha(150),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: IconButton(
-                              iconSize: 28,
-                              icon: Icon(Icons.more_horiz),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
+                      buildTopBar(context),
                       SizedBox(height: 24),
                       UserAvatar(user: user),
 
@@ -262,6 +220,48 @@ class _UserPageState extends State<UserPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildTopBar(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.onSecondary.withAlpha(150),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: IconButton(
+                iconSize: 28,
+                icon: Icon(Icons.chevron_left_sharp),
+                onPressed: () {
+                  context.push(AppRoutes.home.path);
+                },
+              ),
+            ),
+            SizedBox(width: 16),
+            Text("Profile", style: TextStyle(fontSize: 17)),
+          ],
+        ),
+
+        Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.onSecondary.withAlpha(150),
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: IconButton(
+            iconSize: 28,
+            icon: Icon(Icons.more_horiz),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
+      ],
     );
   }
 
