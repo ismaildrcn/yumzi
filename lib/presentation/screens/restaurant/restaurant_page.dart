@@ -114,110 +114,8 @@ class _RestaurantPageState extends State<RestaurantPage>
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.onSecondary.withAlpha(150),
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    child: IconButton(
-                                      iconSize: 28,
-                                      icon: Icon(Icons.chevron_left_sharp),
-                                      onPressed: () {
-                                        context.push(AppRoutes.home.path);
-                                      },
-                                    ),
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.onSecondary.withAlpha(150),
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    child: IconButton(
-                                      iconSize: 28,
-                                      onPressed: () => onTapFavorite(
-                                        context,
-                                        Provider.of<FavoritesProvider>(
-                                          context,
-                                          listen: false,
-                                        ),
-                                      ),
-                                      icon: Icon(
-                                        isFavorite
-                                            ? Icons.favorite
-                                            : Icons.favorite_border,
-                                        color: Colors.red,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    restaurant?.category != null
-                                        ? Container(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 8,
-                                              vertical: 2,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary
-                                                  .withAlpha(200),
-                                              borderRadius:
-                                                  BorderRadius.circular(6),
-                                            ),
-                                            child: Text(
-                                              restaurant?.category?.name ??
-                                                  "N/A",
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          )
-                                        : SizedBox.shrink(),
-                                    SizedBox(height: 4),
-                                    restaurant?.cuisine != null
-                                        ? Container(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 8,
-                                              vertical: 2,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary
-                                                  .withAlpha(200),
-                                              borderRadius:
-                                                  BorderRadius.circular(6),
-                                            ),
-                                            child: Text(
-                                              restaurant?.cuisine?.name ??
-                                                  "N/A",
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          )
-                                        : SizedBox.shrink(),
-                                  ],
-                                ),
-                              ),
+                              buildTopBar(context),
+                              buildCategoryAndCuisine(context),
                             ],
                           ),
                         ),
@@ -319,6 +217,84 @@ class _RestaurantPageState extends State<RestaurantPage>
                       ),
               ),
             ),
+    );
+  }
+
+  Row buildTopBar(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.onSecondary.withAlpha(150),
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: IconButton(
+            iconSize: 28,
+            icon: Icon(Icons.chevron_left_sharp),
+            onPressed: () {
+              context.push(AppRoutes.home.path);
+            },
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.onSecondary.withAlpha(150),
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: IconButton(
+            iconSize: 28,
+            onPressed: () => onTapFavorite(
+              context,
+              Provider.of<FavoritesProvider>(context, listen: false),
+            ),
+            icon: Icon(
+              isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: Colors.red,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Align buildCategoryAndCuisine(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerRight,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          restaurant?.category != null
+              ? Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary.withAlpha(200),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    restaurant?.category?.name ?? "N/A",
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
+                )
+              : SizedBox.shrink(),
+          SizedBox(height: 4),
+          restaurant?.cuisine != null
+              ? Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary.withAlpha(200),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    restaurant?.cuisine?.name ?? "N/A",
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                  ),
+                )
+              : SizedBox.shrink(),
+        ],
+      ),
     );
   }
 

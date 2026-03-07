@@ -16,10 +16,7 @@ class RestaurantMetaInfo extends StatelessWidget {
           size: 24,
         ),
         SizedBox(width: 4),
-        Text(
-          restaurant.rating.toString(),
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
+        Text(restaurant.rating.toString(), style: TextStyle(fontSize: 16)),
         SizedBox(width: 24),
         Icon(
           Icons.delivery_dining_outlined,

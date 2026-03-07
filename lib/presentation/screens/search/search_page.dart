@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:yumzi/data/models/entity/recent_search_entity.dart';
 import 'package:yumzi/enums/app_routes.dart';
+import 'package:yumzi/presentation/providers/cart_provider.dart';
 import 'package:yumzi/presentation/providers/search_provider.dart';
 import 'package:yumzi/presentation/widgets/auto_complete_controller.dart';
 import 'package:yumzi/utils/debouncer.dart';
@@ -19,6 +20,7 @@ class _SearchPageState extends State<SearchPage> {
   Debouncer debouncer = Debouncer(milliseconds: 200);
   FocusNode searchFocusNode = FocusNode();
   List<RecentSearchEntity> _recentSearches = [];
+  int cartItemCount = 0; // This should ideally come from a CartProvider
 
   List<RecentSearchEntity> get recentSearches => _recentSearches;
 
@@ -39,6 +41,8 @@ class _SearchPageState extends State<SearchPage> {
 
   void _loadData() async {
     final searchProvider = Provider.of<SearchProvider>(context, listen: false);
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    cartItemCount = cartProvider.cartItems.length;
     final fetchedRecentSearches = await searchProvider.fetchRecentSearches();
     setState(() {
       _recentSearches = fetchedRecentSearches;
@@ -52,50 +56,7 @@ class _SearchPageState extends State<SearchPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.onSecondary.withAlpha(150),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: IconButton(
-                            iconSize: 28,
-                            icon: Icon(Icons.chevron_left_sharp),
-                            onPressed: () {
-                              context.push(AppRoutes.home.path);
-                            },
-                          ),
-                        ),
-                        SizedBox(width: 16),
-                        Text("Search", style: TextStyle(fontSize: 17)),
-                      ],
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSecondary.withAlpha(150),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: IconButton(
-                        onPressed: () => {
-                          // TODO: Implement Cart
-                        },
-                        icon: Icon(Icons.shopping_bag_outlined),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              buildTopBar(context),
               const SizedBox(height: 24),
               Consumer<SearchProvider>(
                 builder: (context, searchProvider, child) {
@@ -140,6 +101,57 @@ class _SearchPageState extends State<SearchPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Padding buildTopBar(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSecondary.withAlpha(150),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: IconButton(
+                  iconSize: 28,
+                  icon: Icon(Icons.chevron_left_sharp),
+                  onPressed: () {
+                    context.push(AppRoutes.home.path);
+                  },
+                ),
+              ),
+              SizedBox(width: 16),
+              Text("Search", style: TextStyle(fontSize: 17)),
+            ],
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.onSecondary.withAlpha(150),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: IconButton(
+              onPressed: () => context.push(AppRoutes.cart.path),
+              icon: cartItemCount > 0
+                  ? Badge.count(
+                      count: cartItemCount,
+                      backgroundColor: Theme.of(
+                        context,
+                      ).colorScheme.primary.withAlpha(200),
+                      child: Icon(Icons.shopping_bag_outlined),
+                    )
+                  : Icon(Icons.shopping_bag_outlined),
+            ),
+          ),
+        ],
       ),
     );
   }
