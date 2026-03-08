@@ -110,19 +110,47 @@ class MenuItemEntity {
 }
 
 class Allergens {
-  Allergens({required this.gluten, required this.eggs, required this.soy});
+  Allergens({
+    required this.gluten,
+    required this.eggs,
+    required this.soy,
+    required this.peanuts,
+    required this.treeNuts,
+    required this.dairy,
+    required this.fish,
+    required this.shellfish,
+  });
 
   final bool? gluten;
   final bool? eggs;
   final bool? soy;
+  final bool? peanuts;
+  final bool? treeNuts;
+  final bool? dairy;
+  final bool? fish;
+  final bool? shellfish;
 
   factory Allergens.fromJson(Map<String, dynamic> json) {
     return Allergens(
       gluten: json["gluten"],
       eggs: json["eggs"],
       soy: json["soy"],
+      peanuts: json["peanuts"],
+      treeNuts: json["treeNuts"],
+      dairy: json["dairy"],
+      fish: json["fish"],
+      shellfish: json["shellfish"],
     );
   }
 
-  Map<String, dynamic> toJson() => {"gluten": gluten, "eggs": eggs, "soy": soy};
+  Map<String, dynamic> toJson() => {
+    "gluten": gluten,
+    "eggs": eggs,
+    "soy": soy,
+    "peanuts": peanuts,
+    "treeNuts": treeNuts,
+    "dairy": dairy,
+    "fish": fish,
+    "shellfish": shellfish,
+  };
 }
